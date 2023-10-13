@@ -51,9 +51,7 @@ class PhotoEditorViewController: UIViewController {
         blurEffect.isHidden = true
         resultImagebg.contentMode = .scaleAspectFill
         
-        for view in settingStackViews {
-            view.isHidden = true
-        }
+        defaultUI()
 
         setImageConstraints()
 
@@ -74,7 +72,7 @@ class PhotoEditorViewController: UIViewController {
             resultImage.centerYAnchor.constraint(equalTo: imageResultView.centerYAnchor),
             resultImage.heightAnchor.constraint(equalToConstant: imageRatio*resultImage.frame.width)])
         
-        print("999 imageView width & height: ",resultImage.frame.width,resultImage.frame.height)
+//        print("999 imageView width & height: ",resultImage.frame.width,resultImage.frame.height)
         
         resultImage.contentMode = .scaleAspectFit
             
@@ -84,6 +82,13 @@ class PhotoEditorViewController: UIViewController {
 
         for view in settingStackViews {
             view.isHidden = true
+            
+            view.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                view.topAnchor.constraint(equalTo: imageResultView.bottomAnchor, constant: 16),
+                view.centerXAnchor.constraint(equalTo: imageResultView.centerXAnchor)
+            ])
+
         }
         
     }
@@ -123,7 +128,7 @@ class PhotoEditorViewController: UIViewController {
     
     
     @IBAction func adjustRatio(_ sender: UIButton) {
-        print("adjustRatio")
+//        print("adjustRatio")
         
         resultImage.transform = CGAffineTransform(scaleX: 1, y: 1)
         
@@ -154,7 +159,7 @@ class PhotoEditorViewController: UIViewController {
                 resultImage.heightAnchor.constraint(equalToConstant: newRatio*imageResultView.frame.height)]
         }
         
-        print("11111 width & height",resultImage.frame.width,resultImage.frame.height)
+//        print("11111 width & height",resultImage.frame.width,resultImage.frame.height)
 
         resultImage.contentMode = .scaleAspectFill
         
@@ -241,8 +246,48 @@ class PhotoEditorViewController: UIViewController {
         ])
         
     }
+//    
+//    @IBSegueAction func showContentEditor(_ coder: NSCoder) -> ContentEditorTableViewController? {
+//        let controller =  ContentEditorTableViewController(coder: coder)
+//        
+//        
+//        let renderer = UIGraphicsImageRenderer(size: imageResultView.bounds.size)
+//        let image = renderer.image { context in
+//            imageResultView.drawHierarchy(in: imageResultView.bounds, afterScreenUpdates: true)
+//        }
+//        controller?.selectedImage = image
+//        
+//        return controller
+//    }
     
     
+    @IBAction func output(_ sender: Any) {
+        
+        let renderer = UIGraphicsImageRenderer(size: imageResultView.bounds.size)
+        let image = renderer.image { context in
+            imageResultView.drawHierarchy(in: imageResultView.bounds, afterScreenUpdates: true)
+        }
+            
+        let controller = UIActivityViewController(activityItems: [image], applicationActivities: nil)
+        present(controller, animated: true)
+        
+    }
+    
+    @IBSegueAction func showNoteEditor(_ coder: NSCoder) -> NoteEditorViewController? {
+        let controller = NoteEditorViewController(coder: coder)
+        let renderer = UIGraphicsImageRenderer(size: imageResultView.bounds.size)
+        let image = renderer.image { context in
+            imageResultView.drawHierarchy(in: imageResultView.bounds, afterScreenUpdates: true)
+        }
+
+        controller?.backgroundImage = image
+        
+        return controller
+    }
+    
+    
+    
+   
     
     /*
     // MARK: - Navigation
@@ -271,7 +316,7 @@ extension PhotoEditorViewController: PHPickerViewControllerDelegate {
                         self.blurEffect.isHidden = false
                         self.addImageButton.isHidden = true
                         self.view.layoutIfNeeded()
-                        print("*** imageView width & height: ",self.resultImage.frame.width,self.resultImage.frame.height)
+//                        print("*** imageView width & height: ",self.resultImage.frame.width,self.resultImage.frame.height)
                         self.resizeImage()
                     } else {
                         return
@@ -286,14 +331,14 @@ extension PhotoEditorViewController: PHPickerViewControllerDelegate {
         
         var resizedImage = UIImage()
         
-        print("000 imageView width & height: ",resultImage.frame.width,resultImage.frame.height)
+//        print("000 imageView width & height: ",resultImage.frame.width,resultImage.frame.height)
         
         if let image = resultImage.image {
-            print("555")
+//            print("555")
             imageRatio = image.size.height/image.size.width
             
             if imageRatio >= 1 {
-                print("666")
+//                print("666")
                 //portrait
                 
                 let size = CGSize(width: resultImage.frame.height/imageRatio, height: resultImage.frame.height)
@@ -303,14 +348,14 @@ extension PhotoEditorViewController: PHPickerViewControllerDelegate {
                 })
 
             } else {
-                print("777")
+//                print("777")
                 let size = CGSize(width: resultImage.frame.width, height: imageRatio*resultImage.frame.width)
                 let renderer = UIGraphicsImageRenderer(size: size)
                 resizedImage = renderer.image(actions: { (context) in
                     image.draw(in: renderer.format.bounds)
                 })
 
-                print("888 image width & height",resultImage.frame.width,imageRatio*resultImage.frame.width)
+//                print("888 image width & height",resultImage.frame.width,imageRatio*resultImage.frame.width)
             }
 
 
@@ -320,7 +365,7 @@ extension PhotoEditorViewController: PHPickerViewControllerDelegate {
 
         resultImage.image = resizedImage
         
-        print("111 image width & height: ",resultImage.image?.size.width,resultImage.image?.size.height)
+//        print("111 image width & height: ",resultImage.image?.size.width,resultImage.image?.size.height)
     }
     
 }

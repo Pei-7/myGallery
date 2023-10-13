@@ -8,7 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		AF2E29FD2ACEB3B20055752A /* PhotoEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF2E29FC2ACEB3B20055752A /* PhotoEditorViewController.swift */; };
-		AF2E29FF2AD0028A0055752A /* Enum.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF2E29FE2AD0028A0055752A /* Enum.swift */; };
+		AF2E2A022AD7E0670055752A /* ContentEditorTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF2E2A012AD7E0670055752A /* ContentEditorTableViewController.swift */; };
+		AF2E2A042AD8E5690055752A /* NoteEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF2E2A032AD8E5690055752A /* NoteEditorViewController.swift */; };
 		AF9F133F2ACE509000412A1F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF9F133E2ACE509000412A1F /* AppDelegate.swift */; };
 		AF9F13412ACE509000412A1F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF9F13402ACE509000412A1F /* SceneDelegate.swift */; };
 		AF9F13462ACE509000412A1F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AF9F13442ACE509000412A1F /* Main.storyboard */; };
@@ -20,7 +21,8 @@
 
 /* Begin PBXFileReference section */
 		AF2E29FC2ACEB3B20055752A /* PhotoEditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoEditorViewController.swift; sourceTree = "<group>"; };
-		AF2E29FE2AD0028A0055752A /* Enum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enum.swift; sourceTree = "<group>"; };
+		AF2E2A012AD7E0670055752A /* ContentEditorTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentEditorTableViewController.swift; sourceTree = "<group>"; };
+		AF2E2A032AD8E5690055752A /* NoteEditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteEditorViewController.swift; sourceTree = "<group>"; };
 		AF9F133B2ACE509000412A1F /* myGallery.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = myGallery.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AF9F133E2ACE509000412A1F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AF9F13402ACE509000412A1F /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -43,10 +45,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		AF2E2A002AD7DF9D0055752A /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				AF2E2A012AD7E0670055752A /* ContentEditorTableViewController.swift */,
+				AF2E2A032AD8E5690055752A /* NoteEditorViewController.swift */,
+				AF2E29FC2ACEB3B20055752A /* PhotoEditorViewController.swift */,
+				AF9F13542ACE5B0D00412A1F /* TagsCollectionViewCell.swift */,
+				AF9F13522ACE50CE00412A1F /* InitialViewController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
 		AF9F13322ACE508F00412A1F = {
 			isa = PBXGroup;
 			children = (
-				AF2E29FE2AD0028A0055752A /* Enum.swift */,
 				AF9F133D2ACE509000412A1F /* myGallery */,
 				AF9F133C2ACE509000412A1F /* Products */,
 			);
@@ -67,9 +80,7 @@
 				AF9F13402ACE509000412A1F /* SceneDelegate.swift */,
 				AF9F13492ACE509100412A1F /* LaunchScreen.storyboard */,
 				AF9F13442ACE509000412A1F /* Main.storyboard */,
-				AF2E29FC2ACEB3B20055752A /* PhotoEditorViewController.swift */,
-				AF9F13542ACE5B0D00412A1F /* TagsCollectionViewCell.swift */,
-				AF9F13522ACE50CE00412A1F /* InitialViewController.swift */,
+				AF2E2A002AD7DF9D0055752A /* Controllers */,
 				AF9F13472ACE509100412A1F /* Assets.xcassets */,
 				AF9F134C2ACE509100412A1F /* Info.plist */,
 			);
@@ -148,8 +159,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				AF9F13532ACE50CE00412A1F /* InitialViewController.swift in Sources */,
+				AF2E2A042AD8E5690055752A /* NoteEditorViewController.swift in Sources */,
 				AF9F13552ACE5B0D00412A1F /* TagsCollectionViewCell.swift in Sources */,
-				AF2E29FF2AD0028A0055752A /* Enum.swift in Sources */,
+				AF2E2A022AD7E0670055752A /* ContentEditorTableViewController.swift in Sources */,
 				AF9F133F2ACE509000412A1F /* AppDelegate.swift in Sources */,
 				AF9F13412ACE509000412A1F /* SceneDelegate.swift in Sources */,
 				AF2E29FD2ACEB3B20055752A /* PhotoEditorViewController.swift in Sources */,
