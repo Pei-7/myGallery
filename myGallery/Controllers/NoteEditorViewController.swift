@@ -24,6 +24,10 @@ class NoteEditorViewController: UIViewController {
         }
     }
     
+    var noteString: String?
+    
+    var completion: ((String)->Void)?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -32,6 +36,10 @@ class NoteEditorViewController: UIViewController {
         // Do any additional setup after loading the view.
         
         setUpBackground()
+        if let noteString {
+            inputTextView.text = noteString
+        }
+        
         
         //設置 NotificationCenter ".addObserver" 於鍵盤顯示時通知
         NotificationCenter.default.addObserver(self,
@@ -51,7 +59,7 @@ class NoteEditorViewController: UIViewController {
         backgroundImageView.alpha = 0.8
         
         backgroundTextView.backgroundColor = .white
-        backgroundTextView.alpha = 0.8
+        backgroundTextView.alpha = 0.85
 //        inputTextView.backgroundColor = .white
 //        inputTextView.alpha = 0.8
         backgroundTextView.textColor = .systemGray5
@@ -153,6 +161,17 @@ extension NoteEditorViewController: UITextViewDelegate, UIScrollViewDelegate {
         }
         
         contentHeight = Int(inputTextView.contentSize.height)
-
     }
+    
+    func textViewDidChange(_ textView: UITextView) {
+        if let text = inputTextView.text {
+            completion?(text)
+            print("NoteEditorVC",text)
+        }
+        
+        
+        
+    }
+    
+    
 }

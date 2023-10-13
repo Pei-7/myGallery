@@ -266,14 +266,9 @@
                                     <constraint firstItem="Wv9-rU-Fqf" firstAttribute="centerY" secondItem="gi2-0J-25D" secondAttribute="centerY" id="xSO-9O-XAv"/>
                                     <constraint firstItem="t8N-5D-ojx" firstAttribute="centerY" secondItem="gi2-0J-25D" secondAttribute="centerYWithinMargins" id="yPY-7s-heg"/>
                                 </constraints>
-                                <variation key="default">
-                                    <mask key="subviews">
-                                        <exclude reference="Wv9-rU-Fqf"/>
-                                    </mask>
-                                </variation>
                             </view>
-                            <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Q6e-NY-cmC">
-                                <rect key="frame" x="66" y="135.33333333333334" width="260.66666666666669" height="34.333333333333343"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Q6e-NY-cmC">
+                                <rect key="frame" x="40.666666666666657" y="135.33333333333334" width="311.66666666666674" height="34.333333333333343"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="o5f-K5-ZfC">
                                         <rect key="frame" x="0.0" y="0.0" width="56.333333333333336" height="34.333333333333336"/>
@@ -309,12 +304,19 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="c8l-fU-D7U">
-                                        <rect key="frame" x="205.66666666666666" y="0.0" width="54.999999999999972" height="34.333333333333336"/>
+                                        <rect key="frame" x="205.66666666666669" y="0.0" width="55" height="34.333333333333336"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" image="person.and.background.dotted" catalog="system"/>
                                         <connections>
-                                            <action selector="addFilter:" destination="lkH-99-BcU" eventType="touchUpInside" id="FIR-D8-BN5"/>
                                             <action selector="adjustBlur:" destination="lkH-99-BcU" eventType="touchUpInside" id="ojW-t8-6bF"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cjQ-Tj-ciy">
+                                        <rect key="frame" x="260.66666666666663" y="0.0" width="51" height="34.333333333333336"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="plain" image="square.and.pencil" catalog="system"/>
+                                        <connections>
+                                            <segue destination="jy0-ts-AUO" kind="presentation" destinationCreationSelector="showNoteEditor:" id="vBa-zv-P2z"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -330,17 +332,14 @@
                             <constraint firstItem="gi2-0J-25D" firstAttribute="centerX" secondItem="Phn-Uw-OIw" secondAttribute="centerX" id="Xgw-hC-cqF"/>
                             <constraint firstItem="wqd-RZ-ISG" firstAttribute="trailing" secondItem="tPp-FG-ouQ" secondAttribute="trailing" id="Ygs-9F-f4Y"/>
                             <constraint firstItem="wqd-RZ-ISG" firstAttribute="top" secondItem="gi2-0J-25D" secondAttribute="bottom" id="fTa-cg-uB7"/>
+                            <constraint firstItem="Q6e-NY-cmC" firstAttribute="centerX" secondItem="Phn-Uw-OIw" secondAttribute="centerX" id="kj9-j4-2Vl"/>
                             <constraint firstAttribute="bottom" secondItem="wqd-RZ-ISG" secondAttribute="bottom" id="qnR-jf-DYM"/>
                             <constraint firstItem="wqd-RZ-ISG" firstAttribute="top" secondItem="gi2-0J-25D" secondAttribute="bottom" id="zsW-jT-d3U"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="Fgx-bJ-KdY">
                         <rightBarButtonItems>
-                            <barButtonItem title="Next" id="FOJ-A4-Mx1">
-                                <connections>
-                                    <segue destination="jy0-ts-AUO" kind="show" destinationCreationSelector="showNoteEditor:" id="kdR-Rd-Dee"/>
-                                </connections>
-                            </barButtonItem>
+                            <barButtonItem systemItem="done" id="FOJ-A4-Mx1"/>
                             <barButtonItem systemItem="action" id="f77-gZ-YCe">
                                 <connections>
                                     <action selector="output:" destination="lkH-99-BcU" id="yYd-Dg-kRC"/>
@@ -354,6 +353,7 @@
                         <outlet property="blurStackView" destination="Lzw-Qx-D9m" id="YCy-hL-Ncs"/>
                         <outlet property="cropStackView" destination="9Xr-M0-0MY" id="v4x-Pd-4tg"/>
                         <outlet property="imageResultView" destination="gi2-0J-25D" id="x7o-R9-GZa"/>
+                        <outlet property="mainStackView" destination="Q6e-NY-cmC" id="wD7-Yz-Lds"/>
                         <outlet property="ratioStackView" destination="Cvr-dm-XNR" id="6NR-Qk-vmh"/>
                         <outlet property="resultImage" destination="t8N-5D-ojx" id="uAG-ej-8LW"/>
                         <outlet property="resultImagebg" destination="4Vd-tp-WUa" id="yXg-6X-R0K"/>
@@ -370,16 +370,16 @@
         <!--Note Editor View Controller-->
         <scene sceneID="FNj-mm-Xkz">
             <objects>
-                <viewController id="jy0-ts-AUO" customClass="NoteEditorViewController" customModule="myGallery" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController modalTransitionStyle="flipHorizontal" id="jy0-ts-AUO" customClass="NoteEditorViewController" customModule="myGallery" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="R4U-t5-WnQ">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="01" translatesAutoresizingMaskIntoConstraints="NO" id="l4u-we-fkI">
-                                <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                                <rect key="frame" x="0.0" y="0.0" width="393" height="842"/>
                             </imageView>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="Uha-1g-9Nw">
-                                <rect key="frame" x="40" y="143" width="313" height="635"/>
+                                <rect key="frame" x="40" y="40" width="313" height="762"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="313" id="5bY-Ih-XWR"/>
                                 </constraints>
@@ -388,7 +388,7 @@
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="ZQr-XA-ug5">
-                                <rect key="frame" x="40" y="143" width="313" height="635"/>
+                                <rect key="frame" x="40" y="40" width="313" height="762"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="313" id="Lce-E4-g1U"/>
                                 </constraints>
@@ -455,6 +455,7 @@
         <image name="plus" catalog="system" width="128" height="113"/>
         <image name="rotate.left" catalog="system" width="115" height="128"/>
         <image name="rotate.right" catalog="system" width="115" height="128"/>
+        <image name="square.and.pencil" catalog="system" width="128" height="113"/>
         <systemColor name="labelColor">
             <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>

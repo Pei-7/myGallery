@@ -21,6 +21,8 @@ class PhotoEditorViewController: UIViewController {
     @IBOutlet var addImageButton: UIButton!
     
     
+    @IBOutlet var mainStackView: UIStackView!
+    
     @IBOutlet var settingStackViews: [UIStackView]!
     
     
@@ -42,6 +44,8 @@ class PhotoEditorViewController: UIViewController {
     var reverseX = false
     var reverseY = false
     
+    var noteString: String?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -52,7 +56,7 @@ class PhotoEditorViewController: UIViewController {
         resultImagebg.contentMode = .scaleAspectFill
         
         defaultUI()
-
+        mainStackView.isHidden = true
         setImageConstraints()
 
     }
@@ -273,6 +277,7 @@ class PhotoEditorViewController: UIViewController {
         
     }
     
+    
     @IBSegueAction func showNoteEditor(_ coder: NSCoder) -> NoteEditorViewController? {
         let controller = NoteEditorViewController(coder: coder)
         let renderer = UIGraphicsImageRenderer(size: imageResultView.bounds.size)
@@ -282,11 +287,18 @@ class PhotoEditorViewController: UIViewController {
 
         controller?.backgroundImage = image
         
+        controller?.completion = { [weak self] text in
+            self?.noteString = text
+            print("PhotoEditorVC",text)
+        }
+        
+        if let noteString {
+            controller?.noteString = noteString
+        }
+        
         return controller
     }
-    
-    
-    
+
    
     
     /*
@@ -315,6 +327,7 @@ extension PhotoEditorViewController: PHPickerViewControllerDelegate {
                         self.resultImagebg.image = selectedImage
                         self.blurEffect.isHidden = false
                         self.addImageButton.isHidden = true
+                        self.mainStackView.isHidden = false
                         self.view.layoutIfNeeded()
 //                        print("*** imageView width & height: ",self.resultImage.frame.width,self.resultImage.frame.height)
                         self.resizeImage()
