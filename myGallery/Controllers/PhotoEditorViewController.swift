@@ -7,6 +7,8 @@
 
 import UIKit
 import PhotosUI
+import Alamofire
+
 
 class PhotoEditorViewController: UIViewController {
     
@@ -44,7 +46,9 @@ class PhotoEditorViewController: UIViewController {
     var reverseX = false
     var reverseY = false
     
+    var finalImage: UIImage?
     var noteString: String?
+    var imageURL: URL?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -250,6 +254,9 @@ class PhotoEditorViewController: UIViewController {
         ])
         
     }
+    
+    
+    
 //    
 //    @IBSegueAction func showContentEditor(_ coder: NSCoder) -> ContentEditorTableViewController? {
 //        let controller =  ContentEditorTableViewController(coder: coder)
@@ -267,10 +274,11 @@ class PhotoEditorViewController: UIViewController {
     
     @IBAction func output(_ sender: Any) {
         
-        let renderer = UIGraphicsImageRenderer(size: imageResultView.bounds.size)
-        let image = renderer.image { context in
-            imageResultView.drawHierarchy(in: imageResultView.bounds, afterScreenUpdates: true)
-        }
+//        let renderer = UIGraphicsImageRenderer(size: imageResultView.bounds.size)
+//        let image = renderer.image { context in
+//            imageResultView.drawHierarchy(in: imageResultView.bounds, afterScreenUpdates: true)
+//        }
+        let image = updateFinalImage()
             
         let controller = UIActivityViewController(activityItems: [image], applicationActivities: nil)
         present(controller, animated: true)
@@ -280,12 +288,13 @@ class PhotoEditorViewController: UIViewController {
     
     @IBSegueAction func showNoteEditor(_ coder: NSCoder) -> NoteEditorViewController? {
         let controller = NoteEditorViewController(coder: coder)
-        let renderer = UIGraphicsImageRenderer(size: imageResultView.bounds.size)
-        let image = renderer.image { context in
-            imageResultView.drawHierarchy(in: imageResultView.bounds, afterScreenUpdates: true)
-        }
-
+//        let renderer = UIGraphicsImageRenderer(size: imageResultView.bounds.size)
+//        let image = renderer.image { context in
+//            imageResultView.drawHierarchy(in: imageResultView.bounds, afterScreenUpdates: true)
+//        }
+        let image = updateFinalImage()
         controller?.backgroundImage = image
+        controller?.newRecord = true
         
         controller?.completion = { [weak self] text in
             self?.noteString = text
@@ -299,7 +308,62 @@ class PhotoEditorViewController: UIViewController {
         return controller
     }
 
+    func updateFinalImage() -> UIImage {
+        let renderer = UIGraphicsImageRenderer(size: imageResultView.bounds.size)
+        let image = renderer.image { context in
+            imageResultView.drawHierarchy(in: imageResultView.bounds, afterScreenUpdates: true)
+        }
+        return image
+    }
    
+    
+    @IBAction func uploadRecord(_ sender: Any) {
+        let image = updateFinalImage()
+        
+        
+        uploadImage(image: image) { imageUrl in
+            
+            let date = Date()
+            let dateFormat = DateFormatter()
+            dateFormat.dateFormat = "yyyy-MM-dd"
+            let dateString = dateFormat.string(from: date)
+            
+            let record = AirtableRecords(records: [Records(fields: Fields(date: dateString, imageURL: imageUrl, notes: self.noteString))])
+            print("record",record,"splited info",dateString,imageUrl,self.noteString)
+            Airtable.shared.uploadToAirtable(url: imageUrl, record: record)
+            
+//            self.uploadToAirtable(url: imageUrl)
+        }
+        
+        navigationController?.popToRootViewController(animated: true)
+        
+        
+    }
+    
+    
+    func uploadImage(image: UIImage, completion: @escaping ((URL) -> Void)) {
+        
+        let apiURL = "https://api.imgur.com/3/image"
+        let headers:HTTPHeaders = [
+            "Authorization":"Client-ID 9934154cab5bcf5"]
+        
+        AF.upload(multipartFormData: { data in
+            if let imageData = image.jpegData(compressionQuality: 1) {
+                data.append(imageData, withName: "image")
+            }
+        }, to: apiURL, headers: headers).responseDecodable(of: UploadedImage.self, queue: .main, decoder: JSONDecoder()) { response in
+            switch response.result {
+            case .success(let result):
+                self.imageURL = result.data.link
+                completion(result.data.link)
+                print("uploadImage link:",result.data.link)
+            case .failure(let error):
+                print("uploadImage error:",error)
+            }
+        }
+        
+    }
+
     
     /*
     // MARK: - Navigation

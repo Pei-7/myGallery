@@ -6,12 +6,21 @@
 //
 
 import UIKit
+import AlamofireImage
 
 class NoteEditorViewController: UIViewController {
 
     var backgroundImage: UIImage!
-    @IBOutlet var backgroundImageView: UIImageView!
     
+    var newRecord: Bool = true
+    var detailImageURL: URL?
+    var detailNote: String?
+    
+    
+    @IBOutlet var mainImageView: UIImageView!
+    
+    @IBOutlet var backgroundImageView: UIImageView!
+
     @IBOutlet var backgroundTextView: UITextView!
     
     @IBOutlet var inputTextView: UITextView!
@@ -36,17 +45,27 @@ class NoteEditorViewController: UIViewController {
         // Do any additional setup after loading the view.
         
         setUpBackground()
-        if let noteString {
-            inputTextView.text = noteString
+        
+        if newRecord == false {
+            if let detailImageURL, let detailNote {
+                mainImageView.af.setImage(withURL: detailImageURL)
+                backgroundImageView.af.setImage(withURL: detailImageURL)
+                inputTextView.text = detailNote
+                inputTextView.isEditable = false
+            }
+        } else {
+            
+            if let noteString {
+                inputTextView.text = noteString
+            }
         }
         
         
-        //設置 NotificationCenter ".addObserver" 於鍵盤顯示時通知
         NotificationCenter.default.addObserver(self,
-        selector: #selector(keyboardWillShow), //selector 欄位填寫下方設置的 @objc func 名稱
+        selector: #selector(keyboardWillShow), 
         name: UIResponder.keyboardWillShowNotification, object: nil)
 
-        //設置 NotificationCenter ".addObserver" 於鍵盤隱藏時通知
+
         NotificationCenter.default.addObserver(self,
         selector: #selector(keyboardWillHide),
         name: UIResponder.keyboardWillHideNotification, object: nil)
@@ -55,6 +74,8 @@ class NoteEditorViewController: UIViewController {
     }
     
     func setUpBackground() {
+        mainImageView.image = backgroundImage
+        
         backgroundImageView.image = backgroundImage
         backgroundImageView.alpha = 0.8
         
@@ -135,7 +156,7 @@ class NoteEditorViewController: UIViewController {
              }
     }
 
-    //當鍵盤隱藏時再次修改 textView 底部距離的 constraint
+
     @objc func keyboardWillHide(notification: NSNotification) {
         let contentInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         
