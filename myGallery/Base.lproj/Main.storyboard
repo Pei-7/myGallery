@@ -149,11 +149,23 @@
                         </connections>
                     </collectionView>
                     <navigationItem key="navigationItem" id="42g-e2-bND">
-                        <barButtonItem key="rightBarButtonItem" image="plus" catalog="system" id="ATl-19-ALy">
-                            <connections>
-                                <segue destination="lkH-99-BcU" kind="show" id="lEI-In-B00"/>
-                            </connections>
-                        </barButtonItem>
+                        <rightBarButtonItems>
+                            <barButtonItem image="plus" catalog="system" id="ATl-19-ALy">
+                                <connections>
+                                    <segue destination="lkH-99-BcU" kind="show" id="lEI-In-B00"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem tag="1" image="plus.magnifyingglass" catalog="system" id="pti-Nw-VN1">
+                                <connections>
+                                    <action selector="zoom:" destination="QPr-ub-ibN" id="WWu-fI-ACM"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem image="minus.magnifyingglass" catalog="system" id="tki-3P-4yN">
+                                <connections>
+                                    <action selector="zoom:" destination="QPr-ub-ibN" id="TxV-6V-MHa"/>
+                                </connections>
+                            </barButtonItem>
+                        </rightBarButtonItems>
                     </navigationItem>
                     <connections>
                         <outlet property="loadingIndicator" destination="ESL-eD-zv1" id="mYA-1D-wSS"/>
@@ -619,7 +631,20 @@
                             <constraint firstItem="dQI-s1-lrw" firstAttribute="top" secondItem="l4u-we-fkI" secondAttribute="top" id="sUg-wz-pB0"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="6cn-LN-3rg"/>
+                    <navigationItem key="navigationItem" id="6cn-LN-3rg">
+                        <rightBarButtonItems>
+                            <barButtonItem image="square.and.pencil" catalog="system" id="d8b-aA-olF">
+                                <connections>
+                                    <action selector="edit:" destination="jy0-ts-AUO" id="nqq-3v-5K8"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem image="trash" catalog="system" id="trx-mC-xV2">
+                                <connections>
+                                    <action selector="remove:" destination="jy0-ts-AUO" id="1Y9-mD-10i"/>
+                                </connections>
+                            </barButtonItem>
+                        </rightBarButtonItems>
+                    </navigationItem>
                     <connections>
                         <outlet property="backgroundImageView" destination="l4u-we-fkI" id="iUx-ek-caK"/>
                         <outlet property="backgroundTextView" destination="Uha-1g-9Nw" id="yBL-mI-kEM"/>
@@ -627,6 +652,8 @@
                         <outlet property="mainImageView" destination="zLR-zp-Dqx" id="73C-DH-72p"/>
                         <outletCollection property="textViews" destination="Uha-1g-9Nw" collectionClass="NSMutableArray" id="jOP-mD-RvU"/>
                         <outletCollection property="textViews" destination="ZQr-XA-ug5" collectionClass="NSMutableArray" id="E8K-5F-umv"/>
+                        <outletCollection property="toolButtons" destination="d8b-aA-olF" collectionClass="NSMutableArray" id="hsj-k0-EA1"/>
+                        <outletCollection property="toolButtons" destination="trx-mC-xV2" collectionClass="NSMutableArray" id="aC4-Cf-S9G"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wve-mr-eKe" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -658,13 +685,16 @@
         <image name="camera.filters" catalog="system" width="128" height="119"/>
         <image name="crop" catalog="system" width="128" height="116"/>
         <image name="flip.horizontal" catalog="system" width="128" height="106"/>
+        <image name="minus.magnifyingglass" catalog="system" width="128" height="117"/>
         <image name="person.and.background.dotted" catalog="system" width="128" height="94"/>
         <image name="photo.on.rectangle.angled" catalog="system" width="128" height="98"/>
         <image name="plus" catalog="system" width="128" height="113"/>
+        <image name="plus.magnifyingglass" catalog="system" width="128" height="117"/>
         <image name="rotate.left" catalog="system" width="115" height="128"/>
         <image name="rotate.right" catalog="system" width="115" height="128"/>
         <image name="square.and.pencil" catalog="system" width="128" height="113"/>
         <image name="tag.fill" catalog="system" width="128" height="118"/>
+        <image name="trash" catalog="system" width="117" height="128"/>
         <systemColor name="labelColor">
             <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>

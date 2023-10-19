@@ -11,18 +11,21 @@ import UIKit
 class Airtable {
     static let shared = Airtable()
     
-    let imageCache = NSCache<NSURL, UIImage>()
+    let imageCache = NSCache<NSString, UIImage>()
     var airTableRecords = AirtableRecords(records: [])
     
     
     func fetchImage(url: URL, completionHandler: @escaping (UIImage?) -> Void) {
-        if let image = imageCache.object(forKey: url as NSURL) {
+        let cacheKey = url.absoluteString
+        
+        if let image = imageCache.object(forKey: cacheKey as NSString) as? UIImage {
             completionHandler(image)
             return
         }
+        
         URLSession.shared.dataTask(with: url) { data, response, error in
             if let data = data, let image = UIImage(data: data) {
-                self.imageCache.setObject(image, forKey: url as NSURL)
+                self.imageCache.setObject(image, forKey: cacheKey as NSString)
                 completionHandler(image)
             } else {
                 completionHandler(nil)
@@ -35,9 +38,9 @@ class Airtable {
         
         let tableName = UserDefaults.standard.value(forKey: "TableName") as? String
         
-        print("0000",tableName)
+//        print("0000",tableName)
         if let tableName {
-            let urlString = "https://api.airtable.com/v0/appr9MHZqV2sDkSNN/\(tableName)"
+            let urlString = "https://api.airtable.com/v0/appr9MHZqV2sDkSNN/\(tableName)?sort%5B0%5D%5Bfield%5D=Date&sort%5B0%5D%5Bdirection%5D=asc"
             var urlRequest = URLRequest(url: URL(string: urlString)!)
             urlRequest.httpMethod = "GET"
             urlRequest.setValue("Bearer patZlq0jsSMpSGyQw.e7b367294b6c4dadf5c67e6daf5d21450594f39d3e6eff8b0bcb6e2ce52f73ec", forHTTPHeaderField: "Authorization")
@@ -49,7 +52,7 @@ class Airtable {
                     do {
                         self.airTableRecords = try decoder.decode(AirtableRecords.self, from: data)
                         completion(self.airTableRecords)
-                        print("1111",String(data:data, encoding: .utf8))
+//                        print("1111",String(data:data, encoding: .utf8))
                     } catch {
                         print("decode error:",error)
                         completion(nil)
@@ -63,17 +66,21 @@ class Airtable {
     
     
     
-    func uploadToAirtable(url: URL,record: AirtableRecords) {
-        print("1111")
+    fileprivate func setupURLRequest(_ tableName: Any, httpMethod: String) -> URLRequest {
+        let urlString = "https://api.airtable.com/v0/appr9MHZqV2sDkSNN/\(tableName)"
+        var urlRequest = URLRequest(url: URL(string:urlString)!)
+        
+        urlRequest.httpMethod = httpMethod
+        urlRequest.setValue("Bearer patZlq0jsSMpSGyQw.e7b367294b6c4dadf5c67e6daf5d21450594f39d3e6eff8b0bcb6e2ce52f73ec", forHTTPHeaderField: "Authorization")
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        return urlRequest
+    }
+    
+    func uploadToAirtable(record: AirtableRecords, completion: @escaping () -> Void) {
         
         if let tableName = UserDefaults.standard.value(forKey: "TableName") {
-            print("2222")
-            let urlString = "https://api.airtable.com/v0/appr9MHZqV2sDkSNN/\(tableName)"
-            var urlRequest = URLRequest(url: URL(string:urlString)!)
-            
-            urlRequest.httpMethod = "POST"
-            urlRequest.setValue("Bearer patZlq0jsSMpSGyQw.e7b367294b6c4dadf5c67e6daf5d21450594f39d3e6eff8b0bcb6e2ce52f73ec", forHTTPHeaderField: "Authorization")
-            urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            var urlRequest = setupURLRequest(tableName, httpMethod: "POST")
             
             let encoder = JSONEncoder()
             let body = try? encoder.encode(record)
@@ -81,6 +88,7 @@ class Airtable {
             
             URLSession.shared.dataTask(with: urlRequest) { data, response, error in
                 if let data {
+                    completion()
                     let info = String(data: data, encoding: .utf8)
                     print("uploaded info:",info)
                 }
@@ -88,7 +96,6 @@ class Airtable {
                     print("upload error",error)
                 }
             }.resume()
-            
         }
     }
     
@@ -100,7 +107,7 @@ class Airtable {
         
         //optional 的無法直接省略，而必須一一列出來並設置成 nil
         let columns = AirtableColumn(name: uniqueTableName, fields: [
-            Field(name: "Date", type: "date", options: Options(dateFormat: DateFormat(name: "iso", format: "YYYY-MM-DD"))),
+            Field(name: "Date", type: "dateTime", options: Options(timeZone: "Asia/Taipei", dateFormat: DateFormat(name: "iso", format: "YYYY-MM-DD"), timeFormat: TimeFormat(name: "24hour", format: "HH:mm"))),
             Field(name: "ImageURL", type: "url", options: nil),
             Field(name: "Notes", type: "multilineText", options: nil)
         ], id: nil)
@@ -120,13 +127,13 @@ class Airtable {
             
             URLSession.shared.dataTask(with: urlRequest) { data, response, error in
                 if let data {
-//                    let responseString = String(data: data, encoding: .utf8)
-//                    print("encode response:",responseString)
+                    let responseString = String(data: data, encoding: .utf8)
+                    print("encode response:",responseString)
                     
                     let decoder = JSONDecoder()
                     let tableItem = try? decoder.decode(AirtableColumn.self, from: data)
                     UserDefaults.standard.setValue(tableItem?.id, forKey: "TableID")
-                    print("tableID",UserDefaults.standard.value(forKey: "TableID"))
+//                    print("tableID",UserDefaults.standard.value(forKey: "TableID"))
 
                     
                 } else {
@@ -137,4 +144,47 @@ class Airtable {
         }
         return uniqueTableName
     }
+    
+    
+    
+    func sentEditedRecord(record: AirtableRecords, completion: @escaping () -> Void) {
+        
+        if let tableName = UserDefaults.standard.value(forKey: "TableName") {
+            var urlRequest = setupURLRequest(tableName, httpMethod: "PATCH")
+            
+            let encoder = JSONEncoder()
+            let body = try? encoder.encode(record)
+            urlRequest.httpBody = body
+            
+            URLSession.shared.dataTask(with: urlRequest) { data, response, error in
+                if let data {
+                    let responseString = String(data: data, encoding: .utf8)
+                    print("editing encode response:",responseString)
+                } else {
+                    print("editing encode error",error)
+                }
+            }.resume()
+            
+        }
+    }
+    
+    
+    func removeRecord(id: String, completion: @escaping () -> Void) {
+        if let tableName = UserDefaults.standard.value(forKey: "TableName") {
+            let urlSuffix = "\(tableName)/\(id)"
+            var urlRequest = setupURLRequest(urlSuffix, httpMethod: "Delete")
+            
+            URLSession.shared.dataTask(with: urlRequest) { data, response, error in
+                if let data {
+                    let responseString = String(data: data, encoding: .utf8)
+                    print("deleted encode response:",responseString)
+                } else {
+                    print("deleted encode error",error)
+                }
+            }.resume()
+            
+        }
+            
+    }
+    
 }

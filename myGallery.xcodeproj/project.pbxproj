@@ -8,18 +8,15 @@
 
 /* Begin PBXBuildFile section */
 		AF2E29FD2ACEB3B20055752A /* PhotoEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF2E29FC2ACEB3B20055752A /* PhotoEditorViewController.swift */; };
-		AF2E2A022AD7E0670055752A /* ContentEditorTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF2E2A012AD7E0670055752A /* ContentEditorTableViewController.swift */; };
 		AF2E2A042AD8E5690055752A /* NoteEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF2E2A032AD8E5690055752A /* NoteEditorViewController.swift */; };
 		AF2E2A062ADA3D050055752A /* UploadedImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF2E2A052ADA3D050055752A /* UploadedImage.swift */; };
 		AF2E2A0A2ADA3E790055752A /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = AF2E2A092ADA3E790055752A /* Alamofire */; };
-		AF2E2A0C2ADA48D00055752A /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF2E2A0B2ADA48D00055752A /* HomeViewController.swift */; };
 		AF2E2A0E2ADA4F6D0055752A /* AirtableColumn.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF2E2A0D2ADA4F6D0055752A /* AirtableColumn.swift */; };
 		AF2E2A102ADA88D60055752A /* AirtableRecords.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF2E2A0F2ADA88D60055752A /* AirtableRecords.swift */; };
 		AF2E2A132ADB9ECB0055752A /* AlamofireImage in Frameworks */ = {isa = PBXBuildFile; productRef = AF2E2A122ADB9ECB0055752A /* AlamofireImage */; };
 		AF2E2A172ADFBB1F0055752A /* Airtable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF2E2A162ADFBB1F0055752A /* Airtable.swift */; };
 		AF2E2A1B2ADFEA6E0055752A /* PostsCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF2E2A1A2ADFEA6E0055752A /* PostsCollectionViewCell.swift */; };
 		AF2E2A1F2AE114350055752A /* HomeCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF2E2A1E2AE114350055752A /* HomeCollectionViewController.swift */; };
-		AF2E2A212AE11AE90055752A /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF2E2A202AE11AE90055752A /* DetailViewController.swift */; };
 		AF9F133F2ACE509000412A1F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF9F133E2ACE509000412A1F /* AppDelegate.swift */; };
 		AF9F13412ACE509000412A1F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF9F13402ACE509000412A1F /* SceneDelegate.swift */; };
 		AF9F13462ACE509000412A1F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AF9F13442ACE509000412A1F /* Main.storyboard */; };
@@ -31,16 +28,13 @@
 
 /* Begin PBXFileReference section */
 		AF2E29FC2ACEB3B20055752A /* PhotoEditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoEditorViewController.swift; sourceTree = "<group>"; };
-		AF2E2A012AD7E0670055752A /* ContentEditorTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentEditorTableViewController.swift; sourceTree = "<group>"; };
 		AF2E2A032AD8E5690055752A /* NoteEditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteEditorViewController.swift; sourceTree = "<group>"; };
 		AF2E2A052ADA3D050055752A /* UploadedImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadedImage.swift; sourceTree = "<group>"; };
-		AF2E2A0B2ADA48D00055752A /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		AF2E2A0D2ADA4F6D0055752A /* AirtableColumn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirtableColumn.swift; sourceTree = "<group>"; };
 		AF2E2A0F2ADA88D60055752A /* AirtableRecords.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirtableRecords.swift; sourceTree = "<group>"; };
 		AF2E2A162ADFBB1F0055752A /* Airtable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Airtable.swift; sourceTree = "<group>"; };
 		AF2E2A1A2ADFEA6E0055752A /* PostsCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsCollectionViewCell.swift; sourceTree = "<group>"; };
 		AF2E2A1E2AE114350055752A /* HomeCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCollectionViewController.swift; sourceTree = "<group>"; };
-		AF2E2A202AE11AE90055752A /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		AF9F133B2ACE509000412A1F /* myGallery.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = myGallery.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AF9F133E2ACE509000412A1F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AF9F13402ACE509000412A1F /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -68,11 +62,8 @@
 		AF2E2A002AD7DF9D0055752A /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				AF2E2A202AE11AE90055752A /* DetailViewController.swift */,
-				AF2E2A012AD7E0670055752A /* ContentEditorTableViewController.swift */,
 				AF2E2A032AD8E5690055752A /* NoteEditorViewController.swift */,
 				AF2E29FC2ACEB3B20055752A /* PhotoEditorViewController.swift */,
-				AF2E2A0B2ADA48D00055752A /* HomeViewController.swift */,
 				AF2E2A1E2AE114350055752A /* HomeCollectionViewController.swift */,
 				AF9F13522ACE50CE00412A1F /* InitialViewController.swift */,
 			);
@@ -205,16 +196,13 @@
 				AF9F13532ACE50CE00412A1F /* InitialViewController.swift in Sources */,
 				AF2E2A042AD8E5690055752A /* NoteEditorViewController.swift in Sources */,
 				AF9F13552ACE5B0D00412A1F /* TagsCollectionViewCell.swift in Sources */,
-				AF2E2A022AD7E0670055752A /* ContentEditorTableViewController.swift in Sources */,
 				AF9F133F2ACE509000412A1F /* AppDelegate.swift in Sources */,
 				AF2E2A1B2ADFEA6E0055752A /* PostsCollectionViewCell.swift in Sources */,
 				AF2E2A0E2ADA4F6D0055752A /* AirtableColumn.swift in Sources */,
-				AF2E2A0C2ADA48D00055752A /* HomeViewController.swift in Sources */,
 				AF9F13412ACE509000412A1F /* SceneDelegate.swift in Sources */,
 				AF2E2A172ADFBB1F0055752A /* Airtable.swift in Sources */,
 				AF2E29FD2ACEB3B20055752A /* PhotoEditorViewController.swift in Sources */,
 				AF2E2A1F2AE114350055752A /* HomeCollectionViewController.swift in Sources */,
-				AF2E2A212AE11AE90055752A /* DetailViewController.swift in Sources */,
 				AF2E2A102ADA88D60055752A /* AirtableRecords.swift in Sources */,
 				AF2E2A062ADA3D050055752A /* UploadedImage.swift in Sources */,
 			);

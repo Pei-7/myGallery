@@ -8,10 +8,11 @@
 import Foundation
 
 struct AirtableRecords: Codable {
-    let records: [Records]
+    let records: [Records]?
 }
 
 struct Records: Codable {
+    var id: String?
     var fields: Fields
 }
 

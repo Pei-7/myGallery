@@ -85,20 +85,26 @@ class HomeViewController: UIViewController {
 
 extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        airTableRecords.records.count
+        if let records = airTableRecords.records {
+            return records.count
+        } else {
+            return 0
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "\(PostsCollectionViewCell.self)", for: indexPath) as! PostsCollectionViewCell
         
-        let url = airTableRecords.records[indexPath.item].fields.imageURL
-        Airtable.shared.fetchImage(url: url) { image in
-            DispatchQueue.main.async {
-                cell.contentImageView.image = image
-                self.loadingIndicator.stopAnimating()
-                self.loadingIndicator.isHidden = true
+        if let records = airTableRecords.records {
+            let url = records[indexPath.item].fields.imageURL
+            Airtable.shared.fetchImage(url: url) { image in
+                DispatchQueue.main.async {
+                    cell.contentImageView.image = image
+                    self.loadingIndicator.stopAnimating()
+                    self.loadingIndicator.isHidden = true
+                }
+                
             }
-            
         }
         
         return cell

@@ -20,10 +20,17 @@ struct Field: Codable {
 }
 
 struct Options: Codable {
+    let timeZone: String?
     let dateFormat: DateFormat?
+    let timeFormat: TimeFormat?
 }
 
 struct DateFormat: Codable {
+    let name: String
+    let format: String
+}
+
+struct TimeFormat: Codable {
     let name: String
     let format: String
 }

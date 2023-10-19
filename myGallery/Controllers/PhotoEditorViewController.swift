@@ -12,6 +12,8 @@ import Alamofire
 
 class PhotoEditorViewController: UIViewController {
     
+    var airTableRecords = AirtableRecords(records: [])
+    
     @IBOutlet var imageResultView: UIView!
 
     @IBOutlet var resultImagebg: UIImageView!
@@ -323,14 +325,23 @@ class PhotoEditorViewController: UIViewController {
         
         uploadImage(image: image) { imageUrl in
             
-            let date = Date()
-            let dateFormat = DateFormatter()
-            dateFormat.dateFormat = "yyyy-MM-dd"
-            let dateString = dateFormat.string(from: date)
+//            let date = Date()
+//            let dateFormat = DateFormatter()
+//            dateFormat.dateFormat = "yyyy-MM-dd HH:mm"
+//            let dateString = dateFormat.string(from: date)
+            
+            
+            let iso8601Formatter = ISO8601DateFormatter()
+            let dateString = iso8601Formatter.string(from: Date())
             
             let record = AirtableRecords(records: [Records(fields: Fields(date: dateString, imageURL: imageUrl, notes: self.noteString))])
-            print("record",record,"splited info",dateString,imageUrl,self.noteString)
-            Airtable.shared.uploadToAirtable(url: imageUrl, record: record)
+//            print("record",record,"splited info",dateString,imageUrl,self.noteString)
+            Airtable.shared.uploadToAirtable(record: record) {
+                Airtable.shared.getRecords { records in
+                    print("delegate send data",records)
+                    NotificationCenter.default.post(name: NSNotification.Name("DataReceived"), object: records)
+                }
+            }
             
 //            self.uploadToAirtable(url: imageUrl)
         }
@@ -446,4 +457,3 @@ extension PhotoEditorViewController: PHPickerViewControllerDelegate {
     }
     
 }
-

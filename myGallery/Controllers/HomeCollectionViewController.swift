@@ -9,16 +9,46 @@ import UIKit
 
 private let reuseIdentifier = "Cell"
 
+
 class HomeCollectionViewController: UICollectionViewController {
+
+
     
     var tableName: String?
     var airTableRecords = AirtableRecords(records: [])
+    
+    var columnCount: Double = 3
+    var itemSpace: Double = 2
 
     @IBOutlet var loadingIndicator: UIActivityIndicatorView!
+    var notificationReceived: Bool = false
     
+    override func viewDidAppear(_ animated: Bool) {
+        
+        NotificationCenter.default.addObserver(forName: NSNotification.Name("DataReceived"), object: nil, queue: nil) { notification in
+            print("000 NotificationCenter observer")
+            if let records = notification.object as? AirtableRecords {
+                self.airTableRecords = records
+//                print("111",self.airTableRecords.records?.count)
+                DispatchQueue.main.async {
+                    self.collectionView.reloadData()
+                }
+            }
+            self.notificationReceived = true
+        }
+
+        if notificationReceived == false {
+            updateRecords()
+        }
+    }
+    
+    var viewDidLoadCount = 0
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        viewDidLoadCount += 1
+        print("viewDidLoadCount",viewDidLoadCount)
+
         
         loadingIndicator.isHidden = false
         loadingIndicator.startAnimating()
@@ -75,34 +105,28 @@ class HomeCollectionViewController: UICollectionViewController {
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of items
-        return airTableRecords.records.count
+        print("airTableRecords.records.count",airTableRecords.records?.count)
+        if let records = airTableRecords.records {
+            return records.count
+        } else {
+            return 0
+        }
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PostsCollectionViewCell", for: indexPath) as! PostsCollectionViewCell
     
         // Configure the cell
-        let url = airTableRecords.records[indexPath.item].fields.imageURL
-        Airtable.shared.fetchImage(url: url) { image in
-            DispatchQueue.main.async {
-                
-                cell.postImage.image = image
-                cell.postImage.layer.cornerRadius = 8
-                cell.postImage.clipsToBounds = true
-                
-//
-//                cell.postButton.setImage(image, for: .normal)
-//                cell.postButton.layer.cornerRadius = 8
-//                cell.postButton.clipsToBounds = true
-//                cell.postButton.tag = indexPath.item
-//                cell.postButton.addAction(UIAction(handler: { _ in
-//
-//
-//
-//                }), for: .touchUpInside)
-                
-                self.loadingIndicator.stopAnimating()
-                self.loadingIndicator.isHidden = true
+        if let records = airTableRecords.records {
+        let url = records[indexPath.item].fields.imageURL
+            Airtable.shared.fetchImage(url: url) { image in
+                DispatchQueue.main.async {
+                    
+                    cell.postImage.image = image
+                    
+                    self.loadingIndicator.stopAnimating()
+                    self.loadingIndicator.isHidden = true
+                }
             }
             
         }
@@ -113,13 +137,16 @@ class HomeCollectionViewController: UICollectionViewController {
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
          
         if let controller = storyboard?.instantiateViewController(identifier: "\(NoteEditorViewController.self)") as? NoteEditorViewController {
-            
-            controller.detailImageURL =  airTableRecords.records[indexPath.item].fields.imageURL
-            controller.detailNote = airTableRecords.records[indexPath.item].fields.notes
-            controller.newRecord = false
-
-            
-            navigationController?.pushViewController(controller, animated: true)
+            print("check airTableRecords.records.count wheh selected",airTableRecords.records?.count,[indexPath.item],"-----imageURL:",airTableRecords.records?[indexPath.item].fields.imageURL,"-----note:",airTableRecords.records?[indexPath.item].fields.notes)
+            if let records = airTableRecords.records {
+                controller.recordID = records[indexPath.item].id
+                controller.selectedRecordField = records[indexPath.item].fields
+                controller.detailImageURL =  records[indexPath.item].fields.imageURL
+                controller.detailNote = records[indexPath.item].fields.notes
+                controller.newRecord = false
+                
+                navigationController?.pushViewController(controller, animated: true)
+            }
         }
     }
 
@@ -144,8 +171,7 @@ class HomeCollectionViewController: UICollectionViewController {
     
     func setupCellSize() {
         
-        let itemSpace: Double = 2
-        let columnCount: Double = 2
+        
 
         let flowLayout = collectionViewLayout as? UICollectionViewFlowLayout
         let width = floor((collectionView.bounds.width - itemSpace * (columnCount-1)) / columnCount)
@@ -156,6 +182,40 @@ class HomeCollectionViewController: UICollectionViewController {
     }
    
 
+    @IBAction func zoom(_ sender: UIBarButtonItem) {
+        print("zoom tapped")
+
+        
+        switch sender.tag {
+        case 0:
+            if columnCount < 7 {
+                columnCount += 1
+            }
+        case 1:
+            if columnCount > 1 {
+                columnCount -= 1
+            }
+        default:
+            return
+        }
+        
+
+        switch columnCount {
+        case 1:
+            itemSpace = 4
+        case 6:
+            itemSpace = 1
+        case 7:
+            itemSpace = 0
+        default:
+            itemSpace = 2
+        }
+        
+        setupCellSize()
+//        collectionView.reloadData()
+
+        
+    }
     
     
     
