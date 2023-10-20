@@ -387,6 +387,81 @@
                                             </button>
                                         </subviews>
                                     </stackView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" fixedFrame="YES" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="E0L-p3-Mhz">
+                                        <rect key="frame" x="39" y="129" width="304" height="44"/>
+                                        <subviews>
+                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="TR7-vO-VFP">
+                                                <rect key="frame" x="0.0" y="0.0" width="304" height="44"/>
+                                                <subviews>
+                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="V98-wD-9mZ">
+                                                        <rect key="frame" x="0.0" y="0.0" width="44" height="44"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="44" id="3pT-dh-562"/>
+                                                            <constraint firstAttribute="width" constant="44" id="Dei-ON-UOd"/>
+                                                            <constraint firstAttribute="width" secondItem="V98-wD-9mZ" secondAttribute="height" multiplier="1:1" id="v6K-Sg-JiX"/>
+                                                        </constraints>
+                                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                        <state key="normal" image="miao0"/>
+                                                        <connections>
+                                                            <action selector="applyFilter:" destination="lkH-99-BcU" eventType="touchUpInside" id="qIf-dZ-m3E"/>
+                                                        </connections>
+                                                    </button>
+                                                    <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IcC-3m-TJP">
+                                                        <rect key="frame" x="52" y="0.0" width="44" height="44"/>
+                                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                        <state key="normal" image="miao1"/>
+                                                        <connections>
+                                                            <action selector="applyFilter:" destination="lkH-99-BcU" eventType="touchUpInside" id="1w5-zg-DAZ"/>
+                                                        </connections>
+                                                    </button>
+                                                    <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KMz-pF-IJd">
+                                                        <rect key="frame" x="104" y="0.0" width="44" height="44"/>
+                                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                        <state key="normal" image="miao2"/>
+                                                        <connections>
+                                                            <action selector="applyFilter:" destination="lkH-99-BcU" eventType="touchUpInside" id="jQT-VV-Qn8"/>
+                                                        </connections>
+                                                    </button>
+                                                    <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4DY-0L-Fxy">
+                                                        <rect key="frame" x="156" y="0.0" width="44" height="44"/>
+                                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                        <state key="normal" image="miao3"/>
+                                                        <connections>
+                                                            <action selector="applyFilter:" destination="lkH-99-BcU" eventType="touchUpInside" id="hDJ-FI-hzg"/>
+                                                        </connections>
+                                                    </button>
+                                                    <button opaque="NO" tag="4" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="esc-iP-qvB">
+                                                        <rect key="frame" x="208" y="0.0" width="44" height="44"/>
+                                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                        <state key="normal" image="miao4"/>
+                                                        <connections>
+                                                            <action selector="applyFilter:" destination="lkH-99-BcU" eventType="touchUpInside" id="sY4-jC-ukP"/>
+                                                        </connections>
+                                                    </button>
+                                                    <button opaque="NO" tag="5" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="14x-ix-e6d">
+                                                        <rect key="frame" x="260" y="0.0" width="44" height="44"/>
+                                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                        <state key="normal" image="miao5"/>
+                                                        <connections>
+                                                            <action selector="applyFilter:" destination="lkH-99-BcU" eventType="touchUpInside" id="g1d-rj-Xmd"/>
+                                                        </connections>
+                                                    </button>
+                                                </subviews>
+                                                <constraints>
+                                                    <constraint firstItem="IcC-3m-TJP" firstAttribute="height" secondItem="V98-wD-9mZ" secondAttribute="height" id="2hr-K4-HII"/>
+                                                    <constraint firstItem="KMz-pF-IJd" firstAttribute="height" secondItem="V98-wD-9mZ" secondAttribute="height" id="8gA-sR-eyF"/>
+                                                    <constraint firstItem="4DY-0L-Fxy" firstAttribute="width" secondItem="V98-wD-9mZ" secondAttribute="width" id="SIH-pm-3IQ"/>
+                                                    <constraint firstItem="14x-ix-e6d" firstAttribute="height" secondItem="V98-wD-9mZ" secondAttribute="height" id="Tt0-9n-kYS"/>
+                                                    <constraint firstItem="esc-iP-qvB" firstAttribute="width" secondItem="V98-wD-9mZ" secondAttribute="width" id="bjE-Yh-4aM"/>
+                                                    <constraint firstItem="14x-ix-e6d" firstAttribute="width" secondItem="V98-wD-9mZ" secondAttribute="width" id="cBc-Lv-wOF"/>
+                                                    <constraint firstItem="4DY-0L-Fxy" firstAttribute="height" secondItem="V98-wD-9mZ" secondAttribute="height" id="kwd-TM-j9Q"/>
+                                                    <constraint firstItem="KMz-pF-IJd" firstAttribute="width" secondItem="V98-wD-9mZ" secondAttribute="width" id="m02-ZV-PRJ"/>
+                                                    <constraint firstItem="IcC-3m-TJP" firstAttribute="width" secondItem="V98-wD-9mZ" secondAttribute="width" id="nUk-nQ-EBz"/>
+                                                    <constraint firstItem="esc-iP-qvB" firstAttribute="height" secondItem="V98-wD-9mZ" secondAttribute="height" id="wxd-rN-0UZ"/>
+                                                </constraints>
+                                            </stackView>
+                                        </subviews>
+                                    </stackView>
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
@@ -545,6 +620,7 @@
                         <outlet property="blurEffect" destination="giB-rZ-oLt" id="1Ey-J1-fBa"/>
                         <outlet property="blurStackView" destination="Lzw-Qx-D9m" id="YCy-hL-Ncs"/>
                         <outlet property="cropStackView" destination="9Xr-M0-0MY" id="v4x-Pd-4tg"/>
+                        <outlet property="filterStackView" destination="E0L-p3-Mhz" id="DEN-on-4Lw"/>
                         <outlet property="imageResultView" destination="gi2-0J-25D" id="x7o-R9-GZa"/>
                         <outlet property="mainStackView" destination="Q6e-NY-cmC" id="wD7-Yz-Lds"/>
                         <outlet property="ratioStackView" destination="Cvr-dm-XNR" id="6NR-Qk-vmh"/>
@@ -554,11 +630,18 @@
                         <outletCollection property="settingStackViews" destination="Lzw-Qx-D9m" collectionClass="NSMutableArray" id="ZaO-y0-eYF"/>
                         <outletCollection property="settingStackViews" destination="9Xr-M0-0MY" collectionClass="NSMutableArray" id="73u-TP-RAM"/>
                         <outletCollection property="settingStackViews" destination="Ol2-zK-zmW" collectionClass="NSMutableArray" id="6uy-up-6qr"/>
+                        <outletCollection property="settingStackViews" destination="E0L-p3-Mhz" collectionClass="NSMutableArray" id="NYG-4u-TBo"/>
+                        <outletCollection property="filterButtons" destination="V98-wD-9mZ" collectionClass="NSMutableArray" id="OW0-zY-AAE"/>
+                        <outletCollection property="filterButtons" destination="IcC-3m-TJP" collectionClass="NSMutableArray" id="ZnN-eO-D7E"/>
+                        <outletCollection property="filterButtons" destination="KMz-pF-IJd" collectionClass="NSMutableArray" id="5ll-IC-InK"/>
+                        <outletCollection property="filterButtons" destination="4DY-0L-Fxy" collectionClass="NSMutableArray" id="AR7-o0-U6A"/>
+                        <outletCollection property="filterButtons" destination="esc-iP-qvB" collectionClass="NSMutableArray" id="5AR-ur-JPa"/>
+                        <outletCollection property="filterButtons" destination="14x-ix-e6d" collectionClass="NSMutableArray" id="Plk-8P-2aD"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="q1E-aj-qWV" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3743" y="-182"/>
+            <point key="canvasLocation" x="3742.7480916030531" y="-182.3943661971831"/>
         </scene>
         <!--Note Editor View Controller-->
         <scene sceneID="FNj-mm-Xkz">
@@ -685,6 +768,12 @@
         <image name="camera.filters" catalog="system" width="128" height="119"/>
         <image name="crop" catalog="system" width="128" height="116"/>
         <image name="flip.horizontal" catalog="system" width="128" height="106"/>
+        <image name="miao0" width="3024" height="3024"/>
+        <image name="miao1" width="1170" height="1170"/>
+        <image name="miao2" width="1170" height="1170"/>
+        <image name="miao3" width="1170" height="1170"/>
+        <image name="miao4" width="1170" height="1170"/>
+        <image name="miao5" width="1170" height="1170"/>
         <image name="minus.magnifyingglass" catalog="system" width="128" height="117"/>
         <image name="person.and.background.dotted" catalog="system" width="128" height="94"/>
         <image name="photo.on.rectangle.angled" catalog="system" width="128" height="98"/>

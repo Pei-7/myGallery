@@ -8,11 +8,14 @@
 import UIKit
 import PhotosUI
 import Alamofire
+import CoreImage.CIFilterBuiltins
 
 
 class PhotoEditorViewController: UIViewController {
     
     var airTableRecords = AirtableRecords(records: [])
+    
+    var selectedImage: UIImage?
     
     @IBOutlet var imageResultView: UIView!
 
@@ -35,7 +38,8 @@ class PhotoEditorViewController: UIViewController {
     
     @IBOutlet var rotateStackView: UIStackView!
     
-
+    @IBOutlet var filterStackView: UIStackView!
+    
     
     @IBOutlet var blurStackView: UIStackView!
     
@@ -47,10 +51,15 @@ class PhotoEditorViewController: UIViewController {
     var cummulativeAngle:CGFloat = 0
     var reverseX = false
     var reverseY = false
+    var scaleX:CGFloat = 1
+    var scaleY:CGFloat = 1
     
     var finalImage: UIImage?
     var noteString: String?
     var imageURL: URL?
+    
+    @IBOutlet var filterButtons: [UIButton]!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -64,6 +73,8 @@ class PhotoEditorViewController: UIViewController {
         defaultUI()
         mainStackView.isHidden = true
         setImageConstraints()
+
+        
 
     }
     
@@ -129,6 +140,7 @@ class PhotoEditorViewController: UIViewController {
     
     @IBAction func addFilter(_ sender: Any) {
         defaultUI()
+        filterStackView.isHidden = false
     }
     
     @IBAction func adjustBlur(_ sender: Any) {
@@ -175,56 +187,123 @@ class PhotoEditorViewController: UIViewController {
         
         NSLayoutConstraint.activate(widthConstraints)
         view.layoutIfNeeded()
-        
-        
 
     }
     
+    
+    fileprivate func currentTransform() {
+        resultImage.transform =
+        CGAffineTransform(scaleX: scaleX, y: scaleY).rotated(by: .pi/180*cummulativeAngle)
+    }
     
     @IBAction func adjustRotation(_ sender: UIButton) {
         
         switch sender.tag {
         case 0:
             cummulativeAngle -= 90
-            resultImage.transform = CGAffineTransform(rotationAngle: .pi/180*cummulativeAngle)
+            currentTransform()
 
         case 1:
             cummulativeAngle += 90
-            resultImage.transform = CGAffineTransform(rotationAngle: .pi/180*cummulativeAngle)
+            currentTransform()
 
         case 2:
             reverseX.toggle()
             if reverseX == true {
-                resultImage.transform = CGAffineTransform(scaleX: -1, y: 1)
+                scaleX = -1
             } else {
-                resultImage.transform = CGAffineTransform(scaleX: 1, y: 1)
+                scaleX = 1
             }
+            currentTransform()
+
             
         case 3:
             reverseY.toggle()
             if reverseY == true {
-                resultImage.transform = CGAffineTransform(scaleX: 1, y: -1)
+                scaleY = -1
             } else {
-                resultImage.transform = CGAffineTransform(scaleX: 1, y: 1)
+                scaleY = 1
             }
+            currentTransform()
             
         default:
             return
         }
-        
-        
-        
-        
-        
+
     }
     
     
+
+    @IBAction func applyFilter(_ sender: UIButton) {
+        
+        var filter:CIFilter?
+            
+        switch sender.tag {
+        case 0:
+            resultImage.image = selectedImage
+            resultImagebg.image = selectedImage
+        case 1:
+            filter = CIFilter.photoEffectChrome()
+        case 2:
+            filter = CIFilter.photoEffectFade()
+        case 3:
+            filter = CIFilter.photoEffectTransfer()
+        case 4:
+            filter = CIFilter.photoEffectInstant()
+        case 5:
+            filter = CIFilter.photoEffectNoir()
+        default:
+            return
+        }
+        
+        if let selectedImage, let filter {
+            print("filter is not nil")
+            updateFilter(image: selectedImage, filter: filter)
+        }
+        
+    }
+
     
-    
-    
-    
-    
-    
+    func updateFilter(image: UIImage,filter: CIFilter) {
+        
+        print("1111")
+        var ciImage = CIImage(image: image)
+        
+        //解決圖片自動順時鐘旋轉 90 度問題
+//        if image.imageOrientation != .up {
+//            print("image.imageOrientation != .up")
+//            ciImage = ciImage?.oriented(forExifOrientation: Int32(image.imageOrientation.rawValue))
+//        }
+
+        
+        filter.setValue(ciImage, forKey: kCIInputImageKey)
+        
+//        if let outputImage = filter.outputImage {
+//            print("2222")
+//            let filteredImage = UIImage(ciImage: outputImage)
+//            resultImage.image = filteredImage
+//            resultImagebg.image = filteredImage
+//
+//        }
+        
+        if let outputImage = filter.outputImage {
+            print("2222")
+            
+            // 創建 CIContext
+            let context = CIContext(options: nil)
+            
+            // 轉換為 CGImage
+            if let cgImage = context.createCGImage(outputImage, from: outputImage.extent) {
+                // 將 CGImage 轉換為 UIImage 並應用圖片方向
+                let filteredImage = UIImage(cgImage: cgImage, scale: UIScreen.main.scale, orientation: image.imageOrientation)
+                resultImage.image = filteredImage
+                resultImagebg.image = filteredImage
+            }
+        }
+
+            
+    }
+
     
     
     @IBAction func adjustBlurStyle(_ sender: UIButton) {
@@ -398,6 +477,7 @@ extension PhotoEditorViewController: PHPickerViewControllerDelegate {
             itemProvider.loadObject(ofClass: UIImage.self) {[weak self] (image, error) in
                 DispatchQueue.main.async {
                     if let self = self, let selectedImage = image as? UIImage,self.resultImage.image == existedImage {
+                        self.selectedImage = selectedImage
                         self.resultImage.image = selectedImage
                         self.resultImagebg.image = selectedImage
                         self.blurEffect.isHidden = false
