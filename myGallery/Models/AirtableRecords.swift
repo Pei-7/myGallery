@@ -18,7 +18,7 @@ struct Records: Codable {
 
 struct Fields: Codable {
     let date: String
-    let imageURL: URL
+    let imageURL: URL?
     let notes: String?
     
     enum CodingKeys: String,CodingKey {

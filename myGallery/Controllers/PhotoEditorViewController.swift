@@ -106,7 +106,7 @@ class PhotoEditorViewController: UIViewController {
             
             view.translatesAutoresizingMaskIntoConstraints = false
             NSLayoutConstraint.activate([
-                view.topAnchor.constraint(equalTo: imageResultView.bottomAnchor, constant: 16),
+                view.topAnchor.constraint(equalTo: imageResultView.bottomAnchor, constant: 32),
                 view.centerXAnchor.constraint(equalTo: imageResultView.centerXAnchor)
             ])
 
@@ -152,7 +152,8 @@ class PhotoEditorViewController: UIViewController {
     @IBAction func adjustRatio(_ sender: UIButton) {
 //        print("adjustRatio")
         
-        resultImage.transform = CGAffineTransform(scaleX: 1, y: 1)
+//        resultImage.transform = CGAffineTransform(scaleX: 1, y: 1)
+        currentTransform()
         
         NSLayoutConstraint.deactivate(widthConstraints)
 
@@ -187,6 +188,8 @@ class PhotoEditorViewController: UIViewController {
         
         NSLayoutConstraint.activate(widthConstraints)
         view.layoutIfNeeded()
+        
+        selectedImage = resultImage.image
 
     }
     
@@ -257,7 +260,6 @@ class PhotoEditorViewController: UIViewController {
         }
         
         if let selectedImage, let filter {
-            print("filter is not nil")
             updateFilter(image: selectedImage, filter: filter)
         }
         
@@ -266,7 +268,6 @@ class PhotoEditorViewController: UIViewController {
     
     func updateFilter(image: UIImage,filter: CIFilter) {
         
-        print("1111")
         var ciImage = CIImage(image: image)
         
         //解決圖片自動順時鐘旋轉 90 度問題
@@ -278,16 +279,9 @@ class PhotoEditorViewController: UIViewController {
         
         filter.setValue(ciImage, forKey: kCIInputImageKey)
         
-//        if let outputImage = filter.outputImage {
-//            print("2222")
-//            let filteredImage = UIImage(ciImage: outputImage)
-//            resultImage.image = filteredImage
-//            resultImagebg.image = filteredImage
-//
-//        }
+
         
         if let outputImage = filter.outputImage {
-            print("2222")
             
             // 創建 CIContext
             let context = CIContext(options: nil)
@@ -298,6 +292,9 @@ class PhotoEditorViewController: UIViewController {
                 let filteredImage = UIImage(cgImage: cgImage, scale: UIScreen.main.scale, orientation: image.imageOrientation)
                 resultImage.image = filteredImage
                 resultImagebg.image = filteredImage
+                
+//                resultImage.contentMode = .scaleAspectFit
+//                resultImagebg.contentMode = .scaleAspectFit
             }
         }
 
@@ -379,7 +376,7 @@ class PhotoEditorViewController: UIViewController {
         
         controller?.completion = { [weak self] text in
             self?.noteString = text
-            print("PhotoEditorVC",text)
+//            print("PhotoEditorVC",text)
         }
         
         if let noteString {
@@ -417,7 +414,7 @@ class PhotoEditorViewController: UIViewController {
 //            print("record",record,"splited info",dateString,imageUrl,self.noteString)
             Airtable.shared.uploadToAirtable(record: record) {
                 Airtable.shared.getRecords { records in
-                    print("delegate send data",records)
+//                    print("delegate send data",records)
                     NotificationCenter.default.post(name: NSNotification.Name("DataReceived"), object: records)
                 }
             }
@@ -446,7 +443,7 @@ class PhotoEditorViewController: UIViewController {
             case .success(let result):
                 self.imageURL = result.data.link
                 completion(result.data.link)
-                print("uploadImage link:",result.data.link)
+//                print("uploadImage link:",result.data.link)
             case .failure(let error):
                 print("uploadImage error:",error)
             }

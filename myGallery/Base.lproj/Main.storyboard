@@ -90,10 +90,28 @@
                             <size key="footerReferenceSize" width="0.0" height="0.0"/>
                             <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                         </collectionViewFlowLayout>
-                        <activityIndicatorView key="backgroundView" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" id="ESL-eD-zv1">
+                        <view key="backgroundView" contentMode="scaleToFill" id="Ufr-kT-hAz">
                             <rect key="frame" x="0.0" y="-103" width="393" height="852"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        </activityIndicatorView>
+                            <subviews>
+                                <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="UrV-zv-snJ">
+                                    <rect key="frame" x="186.66666666666666" y="377.66666666666669" width="20" height="20"/>
+                                </activityIndicatorView>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Click the '+' button  to start fulfilling your gallery!" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PyQ-Qz-pYR">
+                                    <rect key="frame" x="88.333333333333329" y="405.66666666666669" width="216.66666666666669" height="40.666666666666686"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                    <color key="textColor" red="0.91764705879999997" green="0.50196078430000002" blue="0.54117647059999996" alpha="1" colorSpace="calibratedRGB"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                            </subviews>
+                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            <constraints>
+                                <constraint firstItem="UrV-zv-snJ" firstAttribute="bottom" secondItem="PyQ-Qz-pYR" secondAttribute="top" constant="-8" id="2Vk-Bp-iEw"/>
+                                <constraint firstItem="PyQ-Qz-pYR" firstAttribute="centerX" secondItem="Ufr-kT-hAz" secondAttribute="centerX" id="8Av-3h-wwe"/>
+                                <constraint firstItem="UrV-zv-snJ" firstAttribute="centerX" secondItem="Ufr-kT-hAz" secondAttribute="centerX" id="XzU-RD-v10"/>
+                                <constraint firstItem="PyQ-Qz-pYR" firstAttribute="centerY" secondItem="Ufr-kT-hAz" secondAttribute="centerY" id="brX-dw-GHd"/>
+                            </constraints>
+                        </view>
                         <cells>
                             <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="PostsCollectionViewCell" id="3Ff-h9-eFs" customClass="PostsCollectionViewCell" customModule="myGallery" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="127.99999999999997" height="128"/>
@@ -149,6 +167,7 @@
                         </connections>
                     </collectionView>
                     <navigationItem key="navigationItem" id="42g-e2-bND">
+                        <nil key="title"/>
                         <rightBarButtonItems>
                             <barButtonItem image="plus" catalog="system" id="ATl-19-ALy">
                                 <connections>
@@ -168,7 +187,9 @@
                         </rightBarButtonItems>
                     </navigationItem>
                     <connections>
-                        <outlet property="loadingIndicator" destination="ESL-eD-zv1" id="mYA-1D-wSS"/>
+                        <outlet property="emptyReminder" destination="PyQ-Qz-pYR" id="OvC-Z4-I6p"/>
+                        <outlet property="loadingIndicator" destination="UrV-zv-snJ" id="Wwo-e8-V9Y"/>
+                        <outlet property="loadingView" destination="Ufr-kT-hAz" id="R9A-14-NF1"/>
                     </connections>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6fg-Qt-caT" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -287,34 +308,44 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wqd-RZ-ISG">
                                 <rect key="frame" x="0.0" y="622.66666666666663" width="393" height="229.33333333333337"/>
                                 <subviews>
-                                    <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Lzw-Qx-D9m">
-                                        <rect key="frame" x="108.66666666666669" y="8" width="176" height="34.333333333333336"/>
+                                    <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="Lzw-Qx-D9m">
+                                        <rect key="frame" x="114.66666666666669" y="8" width="164" height="44"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tot-ak-8RV">
-                                                <rect key="frame" x="0.0" y="0.0" width="58.666666666666664" height="34.333333333333336"/>
-                                                <state key="normal" title="Button"/>
-                                                <buttonConfiguration key="configuration" style="plain" title="原色"/>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tot-ak-8RV">
+                                                <rect key="frame" x="0.0" y="0.0" width="44" height="44"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="44" id="2CZ-aC-Sh0"/>
+                                                    <constraint firstAttribute="width" constant="44" id="bo5-7U-Ck6"/>
+                                                </constraints>
+                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                <state key="normal" image="shadow0"/>
                                                 <connections>
                                                     <action selector="adjustBlurStyle:" destination="lkH-99-BcU" eventType="touchUpInside" id="kkl-R6-qkn"/>
                                                 </connections>
                                             </button>
-                                            <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6Zr-Zd-TkW">
-                                                <rect key="frame" x="58.666666666666671" y="0.0" width="58.666666666666671" height="34.333333333333336"/>
-                                                <state key="normal" title="Button"/>
-                                                <buttonConfiguration key="configuration" style="plain" title="亮色"/>
+                                            <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6Zr-Zd-TkW">
+                                                <rect key="frame" x="59.999999999999986" y="0.0" width="44" height="44"/>
+                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                <state key="normal" image="shadow1"/>
                                                 <connections>
                                                     <action selector="adjustBlurStyle:" destination="lkH-99-BcU" eventType="touchUpInside" id="8Vj-ux-x8k"/>
                                                 </connections>
                                             </button>
-                                            <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZHq-Vr-9J0">
-                                                <rect key="frame" x="117.33333333333333" y="0.0" width="58.666666666666671" height="34.333333333333336"/>
-                                                <state key="normal" title="Button"/>
-                                                <buttonConfiguration key="configuration" style="plain" title="暗色"/>
+                                            <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZHq-Vr-9J0">
+                                                <rect key="frame" x="120" y="0.0" width="44" height="44"/>
+                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                <state key="normal" image="shadow2"/>
                                                 <connections>
                                                     <action selector="adjustBlurStyle:" destination="lkH-99-BcU" eventType="touchUpInside" id="r7f-un-y4O"/>
                                                 </connections>
                                             </button>
                                         </subviews>
+                                        <constraints>
+                                            <constraint firstItem="ZHq-Vr-9J0" firstAttribute="width" secondItem="tot-ak-8RV" secondAttribute="width" id="Hrh-4m-CEc"/>
+                                            <constraint firstItem="6Zr-Zd-TkW" firstAttribute="width" secondItem="tot-ak-8RV" secondAttribute="width" id="IeB-ph-uM4"/>
+                                            <constraint firstItem="6Zr-Zd-TkW" firstAttribute="height" secondItem="tot-ak-8RV" secondAttribute="height" id="KHz-kn-ULg"/>
+                                            <constraint firstItem="ZHq-Vr-9J0" firstAttribute="height" secondItem="tot-ak-8RV" secondAttribute="height" id="uQ1-eg-1gp"/>
+                                        </constraints>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" fixedFrame="YES" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="9Xr-M0-0MY">
                                         <rect key="frame" x="108" y="61" width="171" height="34.333333333333343"/>
@@ -762,6 +793,7 @@
             <point key="canvasLocation" x="1985.4961832061067" y="-182.3943661971831"/>
         </scene>
     </scenes>
+    <color key="tintColor" red="0.91764705882352937" green="0.50196078431372548" blue="0.54117647058823526" alpha="1" colorSpace="calibratedRGB"/>
     <resources>
         <image name="01" width="3024" height="4032"/>
         <image name="arrow.up.and.down.righttriangle.up.righttriangle.down" catalog="system" width="128" height="128"/>
@@ -781,6 +813,9 @@
         <image name="plus.magnifyingglass" catalog="system" width="128" height="117"/>
         <image name="rotate.left" catalog="system" width="115" height="128"/>
         <image name="rotate.right" catalog="system" width="115" height="128"/>
+        <image name="shadow0" width="1170" height="1170"/>
+        <image name="shadow1" width="1170" height="1170"/>
+        <image name="shadow2" width="1170" height="1170"/>
         <image name="square.and.pencil" catalog="system" width="128" height="113"/>
         <image name="tag.fill" catalog="system" width="128" height="118"/>
         <image name="trash" catalog="system" width="117" height="128"/>

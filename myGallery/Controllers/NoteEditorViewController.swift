@@ -148,20 +148,21 @@ class NoteEditorViewController: UIViewController {
             sender.image = UIImage(systemName: "checkmark")
             editStatus.toggle()
         } else {
+            editStatus.toggle()
+            inputTextView.isEditable = false
+            sender.image = UIImage(systemName: "square.and.pencil")
+            
             let noteString = inputTextView.text
             if let recordID, let selectedRecordField {
                 let record = AirtableRecords(records: [Records(id: recordID, fields: Fields(date: selectedRecordField.date, imageURL: selectedRecordField.imageURL, notes: noteString))])
                 Airtable.shared.sentEditedRecord(record: record) {
                     Airtable.shared.getRecords { records in
-                        print("editing delegate send data",records)
-                        NotificationCenter.default.post(name: NSNotification.Name("DataReceived"), object: records)
+                        print("edited delegate send data",records)
+//                        NotificationCenter.default.post(name: NSNotification.Name("DataReceived"), object: records)
                     }
                 }
             }
-            
-            inputTextView.isEditable = false
-            sender.image = UIImage(systemName: "square.and.pencil")
-            editStatus.toggle()
+            self.navigationController?.popToRootViewController(animated: true)
         }
     }
     
@@ -174,7 +175,7 @@ class NoteEditorViewController: UIViewController {
                 Airtable.shared.removeRecord(id: id) {
                     Airtable.shared.getRecords { records in
                         print("removed delegate send data",records)
-                        NotificationCenter.default.post(name: NSNotification.Name("DataReceived"), object: records)
+//                        NotificationCenter.default.post(name: NSNotification.Name("DataReceived"), object: records)
                     }
                 }
             }

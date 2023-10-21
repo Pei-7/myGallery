@@ -18,20 +18,22 @@ class Airtable {
     func fetchImage(url: URL, completionHandler: @escaping (UIImage?) -> Void) {
         let cacheKey = url.absoluteString
         
-        if let image = imageCache.object(forKey: cacheKey as NSString) as? UIImage {
+        // 先檢查圖片是否已經存在於 NSCache 中
+        if let image = imageCache.object(forKey: cacheKey as NSString) {
             completionHandler(image)
-            return
+        } else {
+            // 如果圖片不存在，才執行下載和緩存的邏輯
+            URLSession.shared.dataTask(with: url) { data, response, error in
+                if let data = data, let image = UIImage(data: data) {
+                    self.imageCache.setObject(image, forKey: cacheKey as NSString)
+                    completionHandler(image)
+                } else {
+                    completionHandler(nil)
+                }
+            }.resume()
         }
-        
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            if let data = data, let image = UIImage(data: data) {
-                self.imageCache.setObject(image, forKey: cacheKey as NSString)
-                completionHandler(image)
-            } else {
-                completionHandler(nil)
-            }
-        }.resume()
     }
+
     
     
     func getRecords(completion: @escaping (AirtableRecords?) -> ()) {
@@ -90,7 +92,7 @@ class Airtable {
                 if let data {
                     completion()
                     let info = String(data: data, encoding: .utf8)
-                    print("uploaded info:",info)
+//                    print("uploaded info:",info)
                 }
                 if let error {
                     print("upload error",error)

@@ -12,53 +12,36 @@ private let reuseIdentifier = "Cell"
 
 class HomeCollectionViewController: UICollectionViewController {
 
-
-    
     var tableName: String?
     var airTableRecords = AirtableRecords(records: [])
+    var downloadedImages: [Bool] = []
     
     var columnCount: Double = 3
     var itemSpace: Double = 2
 
-    @IBOutlet var loadingIndicator: UIActivityIndicatorView!
-    var notificationReceived: Bool = false
+    var fetchCount = 0
     
-    override func viewDidAppear(_ animated: Bool) {
-        
-        NotificationCenter.default.addObserver(forName: NSNotification.Name("DataReceived"), object: nil, queue: nil) { notification in
-            print("000 NotificationCenter observer")
-            if let records = notification.object as? AirtableRecords {
-                self.airTableRecords = records
-//                print("111",self.airTableRecords.records?.count)
-                DispatchQueue.main.async {
-                    self.collectionView.reloadData()
-                }
-            }
-            self.notificationReceived = true
-        }
-
-        if notificationReceived == false {
-            updateRecords()
+    @IBOutlet var loadingIndicator: UIActivityIndicatorView!
+    @IBOutlet var emptyReminder: UILabel!
+    @IBOutlet var loadingView: UIView!
+    
+    
+    func loadingToggle(on: Bool) {
+        if on == true {
+            loadingIndicator.isHidden = false
+            loadingIndicator.startAnimating()
+        } else {
+            loadingIndicator.isHidden = true
+            loadingIndicator.stopAnimating()
         }
     }
     
-    var viewDidLoadCount = 0
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        viewDidLoadCount += 1
-        print("viewDidLoadCount",viewDidLoadCount)
-
-        
-        loadingIndicator.isHidden = false
-        loadingIndicator.startAnimating()
         checkFirstLaunch()
-        
-        updateRecords()
-
         setupCellSize()
-
-        
+//        updateRecords()
         
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
@@ -68,14 +51,51 @@ class HomeCollectionViewController: UICollectionViewController {
 
         // Do any additional setup after loading the view.
     }
+    
+    var workItem: DispatchWorkItem?
+    override func viewDidAppear(_ animated: Bool) {
+        print("viewDidAppear")
+        emptyReminder.isHidden = true
+        loadingToggle(on: true)
+        
+        workItem = DispatchWorkItem { [weak self] in
+            self?.updateRecords() //default update
+        }
+        DispatchQueue.global().async(execute: workItem!)
+        
+        NotificationCenter.default.addObserver(forName: NSNotification.Name("DataReceived"), object: nil, queue: nil) { notification in
+            print("000 NotificationCenter observer")
+            DispatchQueue.main.async {
+                self.loadingToggle(on: true)
+            }
+            
+            if let records = notification.object as? AirtableRecords {
+                self.airTableRecords = records
+                DispatchQueue.main.async {
+                    
+                    self.workItem?.cancel()
+                    self.workItem = DispatchWorkItem {
+                        self.fetchCount = 0
+                        self.updateRecords() //updatest update
+                   }
+                    DispatchQueue.global().async(execute: self.workItem!)
+                                
+//                    self.updateRecords()
+                }
+            }
+        }
+        
+    }
+    
 
     fileprivate func updateRecords() {
+        fetchCount = 0
         Airtable.shared.getRecords { records in
             if let records {
                 self.airTableRecords = records
                 DispatchQueue.main.async {
                     self.collectionView.reloadData()
-                    print(self.airTableRecords)
+//                    print(self.airTableRecords)
                 }
                 
             }
@@ -105,8 +125,15 @@ class HomeCollectionViewController: UICollectionViewController {
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of items
-        print("airTableRecords.records.count",airTableRecords.records?.count)
+//        print("airTableRecords.records.count",airTableRecords.records?.count)
         if let records = airTableRecords.records {
+            
+            if !(records.count > 0) {
+                print("emptyReminder should show or hide!")
+                self.emptyReminder.isHidden = false
+            } else {
+                self.emptyReminder.isHidden = true
+            }
             return records.count
         } else {
             return 0
@@ -114,30 +141,38 @@ class HomeCollectionViewController: UICollectionViewController {
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PostsCollectionViewCell", for: indexPath) as! PostsCollectionViewCell
-    
+        collectionView.bringSubviewToFront(loadingView)
+        
         // Configure the cell
         if let records = airTableRecords.records {
-        let url = records[indexPath.item].fields.imageURL
-            Airtable.shared.fetchImage(url: url) { image in
-                DispatchQueue.main.async {
-                    
-                    cell.postImage.image = image
-                    
-                    self.loadingIndicator.stopAnimating()
-                    self.loadingIndicator.isHidden = true
+            
+            if let url = records[indexPath.item].fields.imageURL {
+//                print("url = records[indexPath.item].fields.imageURL")
+                Airtable.shared.fetchImage(url: url) {
+                    image in
+//                    print("airtable.shared.fectchImage")
+                    DispatchQueue.main.async {
+                        cell.postImage.image = image
+                        self.fetchCount += 1
+                        print("run count:",self.fetchCount,records.count,"loadingIndicator.isHidden",self.loadingIndicator.isHidden,"loadingIndicator.isAnimating",self.loadingIndicator.isAnimating)
+                        if self.fetchCount == records.count {
+                            self.loadingToggle(on: false)
+                            print("run end","loadingIndicator.isHidden",self.loadingIndicator.isHidden,"loadingIndicator.isAnimating",self.loadingIndicator.isAnimating)
+                        }
+                    }
                 }
             }
-            
         }
         
         return cell
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-         
+        
         if let controller = storyboard?.instantiateViewController(identifier: "\(NoteEditorViewController.self)") as? NoteEditorViewController {
-            print("check airTableRecords.records.count wheh selected",airTableRecords.records?.count,[indexPath.item],"-----imageURL:",airTableRecords.records?[indexPath.item].fields.imageURL,"-----note:",airTableRecords.records?[indexPath.item].fields.notes)
+//            print("check airTableRecords.records.count wheh selected",airTableRecords.records?.count,[indexPath.item],"-----imageURL:",airTableRecords.records?[indexPath.item].fields.imageURL,"-----note:",airTableRecords.records?[indexPath.item].fields.notes)
             if let records = airTableRecords.records {
                 controller.recordID = records[indexPath.item].id
                 controller.selectedRecordField = records[indexPath.item].fields
@@ -157,8 +192,7 @@ class HomeCollectionViewController: UICollectionViewController {
             print("is first launch")
             tableName = Airtable.shared.createNewTable()
 //            tableName = createNewTable()
-            loadingIndicator.stopAnimating()
-            loadingIndicator.isHidden = true
+//            stopLoading()
             
             UserDefaults.standard.setValue(false, forKey: "FirstLaunch")
             UserDefaults.standard.setValue(tableName, forKey: "TableName")
@@ -170,8 +204,6 @@ class HomeCollectionViewController: UICollectionViewController {
     }
     
     func setupCellSize() {
-        
-        
 
         let flowLayout = collectionViewLayout as? UICollectionViewFlowLayout
         let width = floor((collectionView.bounds.width - itemSpace * (columnCount-1)) / columnCount)
@@ -183,7 +215,7 @@ class HomeCollectionViewController: UICollectionViewController {
    
 
     @IBAction func zoom(_ sender: UIBarButtonItem) {
-        print("zoom tapped")
+//        print("zoom tapped")
 
         
         switch sender.tag {
