@@ -24,6 +24,7 @@
 		AF9F134B2ACE509100412A1F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AF9F13492ACE509100412A1F /* LaunchScreen.storyboard */; };
 		AF9F13532ACE50CE00412A1F /* InitialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF9F13522ACE50CE00412A1F /* InitialViewController.swift */; };
 		AF9F13552ACE5B0D00412A1F /* TagsCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF9F13542ACE5B0D00412A1F /* TagsCollectionViewCell.swift */; };
+		AFA063962AE3F6AE00B17B58 /* customNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFA063952AE3F6AE00B17B58 /* customNavigationBar.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,6 +45,7 @@
 		AF9F134C2ACE509100412A1F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AF9F13522ACE50CE00412A1F /* InitialViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialViewController.swift; sourceTree = "<group>"; };
 		AF9F13542ACE5B0D00412A1F /* TagsCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagsCollectionViewCell.swift; sourceTree = "<group>"; };
+		AFA063952AE3F6AE00B17B58 /* customNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = customNavigationBar.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +75,7 @@
 		AF2E2A072ADA3D0D0055752A /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				AFA063952AE3F6AE00B17B58 /* customNavigationBar.swift */,
 				AF2E2A052ADA3D050055752A /* UploadedImage.swift */,
 				AF2E2A0D2ADA4F6D0055752A /* AirtableColumn.swift */,
 				AF2E2A0F2ADA88D60055752A /* AirtableRecords.swift */,
@@ -193,6 +196,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AFA063962AE3F6AE00B17B58 /* customNavigationBar.swift in Sources */,
 				AF9F13532ACE50CE00412A1F /* InitialViewController.swift in Sources */,
 				AF2E2A042AD8E5690055752A /* NoteEditorViewController.swift in Sources */,
 				AF9F13552ACE5B0D00412A1F /* TagsCollectionViewCell.swift in Sources */,

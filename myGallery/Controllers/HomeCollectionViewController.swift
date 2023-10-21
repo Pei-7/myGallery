@@ -19,22 +19,43 @@ class HomeCollectionViewController: UICollectionViewController {
     var columnCount: Double = 3
     var itemSpace: Double = 2
 
+    var receivedNotification: Bool = false
     var fetchCount = 0
     
     @IBOutlet var loadingIndicator: UIActivityIndicatorView!
     @IBOutlet var emptyReminder: UILabel!
     @IBOutlet var loadingView: UIView!
     
+    let progressBar = UIProgressView(progressViewStyle: .default)
+    var progressValue = 0
     
-    func loadingToggle(on: Bool) {
-        if on == true {
-            loadingIndicator.isHidden = false
-            loadingIndicator.startAnimating()
-        } else {
-            loadingIndicator.isHidden = true
-            loadingIndicator.stopAnimating()
-        }
+//    func loadingToggle(on: Bool) {
+//        if on == true {
+//            loadingIndicator.isHidden = false
+//            loadingIndicator.startAnimating()
+//        } else {
+//            loadingIndicator.isHidden = true
+//            loadingIndicator.stopAnimating()
+//        }
+//    }
+    
+    func createProgressBar() {
+        // 設定進度條的顏色
+        progressBar.trackTintColor = UIColor.lightGray
+        progressBar.progressTintColor = UIColor.tintColor
+        progressBar.progress = 0.0
+
+        // 計算進度條的尺寸，以使其填滿導航欄的底部
+        let progressBarHeight: CGFloat = 2.0 // 設定進度條的高度
+        let progressBarWidth = navigationController?.navigationBar.frame.width ?? 0.0
+        let progressBarFrame = CGRect(x: 0, y: navigationController?.navigationBar.frame.height ?? 0.0 - progressBarHeight, width: progressBarWidth, height: progressBarHeight)
+        progressBar.frame = progressBarFrame
+
+        // 將進度條添加到導航欄
+        navigationController?.navigationBar.addSubview(progressBar)
     }
+
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,7 +63,9 @@ class HomeCollectionViewController: UICollectionViewController {
         checkFirstLaunch()
         setupCellSize()
 //        updateRecords()
-        
+//        loadingToggle(on: true)
+        createProgressBar()
+
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
@@ -52,37 +75,62 @@ class HomeCollectionViewController: UICollectionViewController {
         // Do any additional setup after loading the view.
     }
     
-    var workItem: DispatchWorkItem?
+    override func viewWillAppear(_ animated: Bool) {
+        progressBar.setProgress(0, animated: false)
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         print("viewDidAppear")
         emptyReminder.isHidden = true
-        loadingToggle(on: true)
-        
-        workItem = DispatchWorkItem { [weak self] in
-            self?.updateRecords() //default update
+        DispatchQueue.main.async {
+            print("progress bar = 0.1")
+            self.progressBar.isHidden = false
+            self.progressBar.setProgress(0.1, animated: true)
         }
-        DispatchQueue.global().async(execute: workItem!)
-        
+
+        receivedNotification = false
         NotificationCenter.default.addObserver(forName: NSNotification.Name("DataReceived"), object: nil, queue: nil) { notification in
             print("000 NotificationCenter observer")
+            self.receivedNotification = true
             DispatchQueue.main.async {
-                self.loadingToggle(on: true)
+                print("progress bar = 0.3")
+                self.progressBar.setProgress(0.3, animated: true)
             }
-            
             if let records = notification.object as? AirtableRecords {
                 self.airTableRecords = records
                 DispatchQueue.main.async {
-                    
-                    self.workItem?.cancel()
-                    self.workItem = DispatchWorkItem {
-                        self.fetchCount = 0
-                        self.updateRecords() //updatest update
-                   }
-                    DispatchQueue.global().async(execute: self.workItem!)
-                                
+                    print("progress bar = 0.7")
+                    self.progressBar.setProgress(0.7, animated: true)
+                    self.fetchCount = 0
+                    print("reset fetchCount",self.fetchCount)
+                    self.updateRecords() //updatest update
 //                    self.updateRecords()
                 }
             }
+        }
+        
+        Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { _ in
+            DispatchQueue.main.async {
+                print("progress bar = 0.4")
+                self.progressBar.setProgress(0.4, animated: true)
+                print("receivedNotification",self.receivedNotification)
+                if self.receivedNotification == false {
+                    self.updateRecords()
+                } else {
+                    print("progress bar = 1")
+                    self.progressBar.setProgress(1, animated: true)
+                    self.progressBar.isHidden = true
+                }
+            }
+        }
+        
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        DispatchQueue.main.async {
+            self.progressBar.isHidden = true
+            print("view did disappear",self.progressBar.isHidden)
         }
         
     }
@@ -94,6 +142,8 @@ class HomeCollectionViewController: UICollectionViewController {
             if let records {
                 self.airTableRecords = records
                 DispatchQueue.main.async {
+                    print("progress bar = 0.75")
+                    self.progressBar.setProgress(0.75, animated: true)
                     self.collectionView.reloadData()
 //                    print(self.airTableRecords)
                 }
@@ -139,7 +189,41 @@ class HomeCollectionViewController: UICollectionViewController {
             return 0
         }
     }
-
+//
+//    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+//
+//        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PostsCollectionViewCell", for: indexPath) as! PostsCollectionViewCell
+//        collectionView.bringSubviewToFront(loadingView)
+//
+//        // Configure the cell
+//        if let records = airTableRecords.records {
+//
+//            if let url = records[indexPath.item].fields.imageURL {
+////                print("url = records[indexPath.item].fields.imageURL")
+//                Airtable.shared.fetchImage(url: url) {
+//                    image in
+////                    print("airtable.shared.fectchImage")
+//                    DispatchQueue.main.async {
+//                        cell.postImage.image = image
+//                        self.fetchCount += 1
+//
+//                        if self.fetchCount == records.count {
+//                            print("progress bar = 1")
+//                            self.progressBar.setProgress(1, animated: true)
+//                            Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { _ in
+//                                self.progressBar.isHidden = true
+//                            }
+//
+//
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//
+//        return cell
+//    }
+//
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PostsCollectionViewCell", for: indexPath) as! PostsCollectionViewCell
@@ -149,20 +233,25 @@ class HomeCollectionViewController: UICollectionViewController {
         if let records = airTableRecords.records {
             
             if let url = records[indexPath.item].fields.imageURL {
-//                print("url = records[indexPath.item].fields.imageURL")
-                Airtable.shared.fetchImage(url: url) {
-                    image in
-//                    print("airtable.shared.fectchImage")
+                Airtable.shared.fetchImage(url: url) { image in
                     DispatchQueue.main.async {
-                        cell.postImage.image = image
-                        self.fetchCount += 1
-                        print("run count:",self.fetchCount,records.count,"loadingIndicator.isHidden",self.loadingIndicator.isHidden,"loadingIndicator.isAnimating",self.loadingIndicator.isAnimating)
-                        if self.fetchCount == records.count {
-                            self.loadingToggle(on: false)
-                            print("run end","loadingIndicator.isHidden",self.loadingIndicator.isHidden,"loadingIndicator.isAnimating",self.loadingIndicator.isAnimating)
+                        // 檢查 cell 的標記是否與當前 indexPath 相符
+                        if cell.tag == indexPath.item {
+                            cell.postImage.image = image
+                            self.fetchCount += 1
+                            
+                            if self.fetchCount == records.count {
+                                print("progress bar = 1")
+                                self.progressBar.setProgress(1, animated: true)
+                                Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { _ in
+                                    self.progressBar.isHidden = true
+                                }
+                            }
                         }
                     }
                 }
+                // 設置 cell 的標記，以便在下載完成後確認
+                cell.tag = indexPath.item
             }
         }
         

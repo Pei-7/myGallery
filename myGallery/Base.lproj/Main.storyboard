@@ -111,6 +111,11 @@
                                 <constraint firstItem="UrV-zv-snJ" firstAttribute="centerX" secondItem="Ufr-kT-hAz" secondAttribute="centerX" id="XzU-RD-v10"/>
                                 <constraint firstItem="PyQ-Qz-pYR" firstAttribute="centerY" secondItem="Ufr-kT-hAz" secondAttribute="centerY" id="brX-dw-GHd"/>
                             </constraints>
+                            <variation key="default">
+                                <mask key="subviews">
+                                    <exclude reference="UrV-zv-snJ"/>
+                                </mask>
+                            </variation>
                         </view>
                         <cells>
                             <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="PostsCollectionViewCell" id="3Ff-h9-eFs" customClass="PostsCollectionViewCell" customModule="myGallery" customModuleProvider="target">

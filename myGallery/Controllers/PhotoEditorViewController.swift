@@ -435,7 +435,7 @@ class PhotoEditorViewController: UIViewController {
             "Authorization":"Client-ID 9934154cab5bcf5"]
         
         AF.upload(multipartFormData: { data in
-            if let imageData = image.jpegData(compressionQuality: 1) {
+            if let imageData = image.jpegData(compressionQuality: 0.8) {
                 data.append(imageData, withName: "image")
             }
         }, to: apiURL, headers: headers).responseDecodable(of: UploadedImage.self, queue: .main, decoder: JSONDecoder()) { response in
