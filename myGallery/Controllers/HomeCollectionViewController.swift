@@ -37,7 +37,7 @@ class HomeCollectionViewController: UICollectionViewController {
     @IBOutlet var loadingView: UIView!
     
     let progressBar = UIProgressView(progressViewStyle: .default)
-
+    var progrssValue: Float = 0.0
     
     func createProgressBar() {
         // 設定進度條的顏色
@@ -56,13 +56,21 @@ class HomeCollectionViewController: UICollectionViewController {
     }
 
     func updateProgressBar(progress: Float) {
-        print("progress bar = \(progress)")
-        progressBar.setProgress(progress, animated: true)
-        if progress == 1 {
-            Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { _ in
+        
+        print("current progress = \(progrssValue), new progress = \(progress)")
+        if progress >= progrssValue {
+            progrssValue = progress
+        }
+        progressBar.setProgress(progrssValue, animated: true)
+
+        if progrssValue == 1 {
+            Timer.scheduledTimer(withTimeInterval: 1.2, repeats: false) { _ in
                 self.progressBar.isHidden = true
             }
         }
+        
+
+        
     }
 
     
@@ -88,30 +96,29 @@ class HomeCollectionViewController: UICollectionViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        progrssValue = 0
         progressBar.setProgress(0, animated: false)
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        print("viewDidAppear")
         emptyReminder.isHidden = true
-        DispatchQueue.main.async {
-            self.progressBar.isHidden = false
-            self.updateProgressBar(progress: 0.1)
-        }
+        progressBar.isHidden = false
+        updateProgressBar(progress: 0.2)
+        
 
         receivedNotification = false
         NotificationCenter.default.addObserver(forName: NSNotification.Name("DataReceived"), object: nil, queue: nil) { notification in
-            print("000 NotificationCenter observer")
+//            print("000 NotificationCenter observer")
             self.receivedNotification = true
             DispatchQueue.main.async {
-                self.updateProgressBar(progress: 0.3)
+                self.updateProgressBar(progress: 0.4)
             }
             if let records = notification.object as? AirtableRecords {
                 self.airTableRecords = records
                 DispatchQueue.main.async {
-                    self.updateProgressBar(progress: 0.7)
+                    self.updateProgressBar(progress: 0.8)
                     self.fetchCount = 0
-                    print("reset fetchCount",self.fetchCount)
+//                    print("reset fetchCount",self.fetchCount)
                     self.updateRecords() //updatest update
                 }
             }
@@ -119,13 +126,12 @@ class HomeCollectionViewController: UICollectionViewController {
         
         Timer.scheduledTimer(withTimeInterval: 2.4, repeats: false) { _ in
             DispatchQueue.main.async {
-                self.updateProgressBar(progress: 0.4)
-                print("receivedNotification",self.receivedNotification)
+                self.updateProgressBar(progress: 0.3)
+//                print("receivedNotification",self.receivedNotification)
                 if self.receivedNotification == false {
                     self.updateRecords()
                 } else {
                     self.updateProgressBar(progress: 1)
-
                 }
             }
         }
@@ -136,7 +142,7 @@ class HomeCollectionViewController: UICollectionViewController {
         super.viewWillDisappear(animated)
         DispatchQueue.main.async {
             self.progressBar.isHidden = true
-            print("view did disappear",self.progressBar.isHidden)
+//            print("view did disappear",self.progressBar.isHidden)
         }
         
     }
@@ -148,7 +154,7 @@ class HomeCollectionViewController: UICollectionViewController {
             if let records {
                 self.airTableRecords = records
                 DispatchQueue.main.async {
-                    self.updateProgressBar(progress: 0.75)
+                    self.updateProgressBar(progress: 0.9)
                     self.collectionView.reloadData()
 //                    print(self.airTableRecords)
                 }
@@ -182,7 +188,7 @@ class HomeCollectionViewController: UICollectionViewController {
         if let records = airTableRecords.records {
             
             if !(records.count > 0) {
-                print("emptyReminder should show!")
+//                print("emptyReminder should show!")
                 self.emptyReminder.isHidden = false
                 Timer.scheduledTimer(withTimeInterval: 4.5, repeats: false) {[weak self] _ in
                     self?.updateProgressBar(progress: 1)
@@ -248,7 +254,7 @@ class HomeCollectionViewController: UICollectionViewController {
         guard let firstLaunch: Bool = UserDefaults.standard.value(forKey: "FirstLaunch") as? Bool else {
             print("is first launch")
             tableName = Airtable.shared.createNewTable()
-            
+            emptyReminder.isHidden = false
             UserDefaults.standard.setValue(false, forKey: "FirstLaunch")
             UserDefaults.standard.setValue(tableName, forKey: "TableName")
             print("TableName",tableName)
