@@ -43,8 +43,6 @@ class PhotoEditorViewController: UIViewController {
     
     @IBOutlet var blurStackView: UIStackView!
     
-//    var pinchCount = 0
-//    var cummulativeScale: CGFloat = 1
     var widthConstraints: [NSLayoutConstraint] = []
     var imageRatio: CGFloat = 1
     
@@ -70,11 +68,9 @@ class PhotoEditorViewController: UIViewController {
         blurEffect.isHidden = true
         resultImagebg.contentMode = .scaleAspectFill
         
-        defaultUI()
+        defaultSettingStackViews()
         mainStackView.isHidden = true
         setImageConstraints()
-
-        
 
     }
     
@@ -93,13 +89,11 @@ class PhotoEditorViewController: UIViewController {
             resultImage.centerYAnchor.constraint(equalTo: imageResultView.centerYAnchor),
             resultImage.heightAnchor.constraint(equalToConstant: imageRatio*resultImage.frame.width)])
         
-//        print("999 imageView width & height: ",resultImage.frame.width,resultImage.frame.height)
-        
         resultImage.contentMode = .scaleAspectFit
             
     }
     
-    func defaultUI() {
+    func defaultSettingStackViews() {
 
         for view in settingStackViews {
             view.isHidden = true
@@ -115,7 +109,6 @@ class PhotoEditorViewController: UIViewController {
     }
     
     @IBAction func addPhoto(_ sender: Any) {
-        defaultUI()
         
         var config = PHPickerConfiguration()
         config.filter = .images
@@ -127,36 +120,31 @@ class PhotoEditorViewController: UIViewController {
 
     
     @IBAction func crop(_ sender: Any) {
-        defaultUI()
-
+        defaultSettingStackViews()
         cropStackView.isHidden = false
     }
     
     
     @IBAction func rotate(_ sender: Any) {
-        defaultUI()
+        defaultSettingStackViews()
         rotateStackView.isHidden = false
     }
     
     @IBAction func addFilter(_ sender: Any) {
-        defaultUI()
+        defaultSettingStackViews()
         filterStackView.isHidden = false
     }
     
     @IBAction func adjustBlur(_ sender: Any) {
-        defaultUI()
+        defaultSettingStackViews()
         blurStackView.isHidden = false
     }
     
     
     @IBAction func adjustRatio(_ sender: UIButton) {
-//        print("adjustRatio")
         
-//        resultImage.transform = CGAffineTransform(scaleX: 1, y: 1)
         currentTransform()
-        
         NSLayoutConstraint.deactivate(widthConstraints)
-
         
         var newRatio: CGFloat = 1
         switch sender.tag {
@@ -173,19 +161,14 @@ class PhotoEditorViewController: UIViewController {
 
         if imageRatio > 1 {
             //portrait
-
             widthConstraints = [ resultImage.widthAnchor.constraint(equalToConstant: newRatio*imageResultView.frame.width)]
         }  else {
             //landscape
-
             widthConstraints = [
                 resultImage.heightAnchor.constraint(equalToConstant: newRatio*imageResultView.frame.height)]
         }
-        
-//        print("11111 width & height",resultImage.frame.width,resultImage.frame.height)
 
         resultImage.contentMode = .scaleAspectFill
-        
         NSLayoutConstraint.activate(widthConstraints)
         view.layoutIfNeeded()
         
@@ -218,7 +201,6 @@ class PhotoEditorViewController: UIViewController {
                 scaleX = 1
             }
             currentTransform()
-
             
         case 3:
             reverseY.toggle()
@@ -269,36 +251,21 @@ class PhotoEditorViewController: UIViewController {
     func updateFilter(image: UIImage,filter: CIFilter) {
         
         var ciImage = CIImage(image: image)
-        
-        //解決圖片自動順時鐘旋轉 90 度問題
-//        if image.imageOrientation != .up {
-//            print("image.imageOrientation != .up")
-//            ciImage = ciImage?.oriented(forExifOrientation: Int32(image.imageOrientation.rawValue))
-//        }
-
-        
         filter.setValue(ciImage, forKey: kCIInputImageKey)
-        
 
-        
         if let outputImage = filter.outputImage {
             
             // 創建 CIContext
             let context = CIContext(options: nil)
-            
             // 轉換為 CGImage
             if let cgImage = context.createCGImage(outputImage, from: outputImage.extent) {
                 // 將 CGImage 轉換為 UIImage 並應用圖片方向
                 let filteredImage = UIImage(cgImage: cgImage, scale: UIScreen.main.scale, orientation: image.imageOrientation)
                 resultImage.image = filteredImage
                 resultImagebg.image = filteredImage
-                
-//                resultImage.contentMode = .scaleAspectFit
-//                resultImagebg.contentMode = .scaleAspectFit
+
             }
         }
-
-            
     }
 
     
@@ -318,7 +285,6 @@ class PhotoEditorViewController: UIViewController {
             return
         }
         
-        
         blurEffect.removeFromSuperview()
         blurEffect = newBlurEffect
         imageResultView.insertSubview(blurEffect, belowSubview: resultImage)
@@ -333,50 +299,23 @@ class PhotoEditorViewController: UIViewController {
         
     }
     
-    
-    
-//    
-//    @IBSegueAction func showContentEditor(_ coder: NSCoder) -> ContentEditorTableViewController? {
-//        let controller =  ContentEditorTableViewController(coder: coder)
-//        
-//        
-//        let renderer = UIGraphicsImageRenderer(size: imageResultView.bounds.size)
-//        let image = renderer.image { context in
-//            imageResultView.drawHierarchy(in: imageResultView.bounds, afterScreenUpdates: true)
-//        }
-//        controller?.selectedImage = image
-//        
-//        return controller
-//    }
-    
-    
-    @IBAction func output(_ sender: Any) {
-        
-//        let renderer = UIGraphicsImageRenderer(size: imageResultView.bounds.size)
-//        let image = renderer.image { context in
-//            imageResultView.drawHierarchy(in: imageResultView.bounds, afterScreenUpdates: true)
-//        }
-        let image = updateFinalImage()
-            
-        let controller = UIActivityViewController(activityItems: [image], applicationActivities: nil)
-        present(controller, animated: true)
-        
+    func graphicsImageRenderer() -> UIImage {
+        let renderer = UIGraphicsImageRenderer(size: imageResultView.bounds.size)
+        let image = renderer.image { context in
+            imageResultView.drawHierarchy(in: imageResultView.bounds, afterScreenUpdates: true)
+        }
+        return image
     }
-    
     
     @IBSegueAction func showNoteEditor(_ coder: NSCoder) -> NoteEditorViewController? {
         let controller = NoteEditorViewController(coder: coder)
-//        let renderer = UIGraphicsImageRenderer(size: imageResultView.bounds.size)
-//        let image = renderer.image { context in
-//            imageResultView.drawHierarchy(in: imageResultView.bounds, afterScreenUpdates: true)
-//        }
-        let image = updateFinalImage()
+
+        let image = graphicsImageRenderer()
         controller?.backgroundImage = image
         controller?.newRecord = true
         
         controller?.completion = { [weak self] text in
             self?.noteString = text
-//            print("PhotoEditorVC",text)
         }
         
         if let noteString {
@@ -386,48 +325,7 @@ class PhotoEditorViewController: UIViewController {
         return controller
     }
 
-    func updateFinalImage() -> UIImage {
-        let renderer = UIGraphicsImageRenderer(size: imageResultView.bounds.size)
-        let image = renderer.image { context in
-            imageResultView.drawHierarchy(in: imageResultView.bounds, afterScreenUpdates: true)
-        }
-        return image
-    }
-   
-    
-    @IBAction func uploadRecord(_ sender: Any) {
-        let image = updateFinalImage()
-        
-        
-        uploadImage(image: image) { imageUrl in
-            
-//            let date = Date()
-//            let dateFormat = DateFormatter()
-//            dateFormat.dateFormat = "yyyy-MM-dd HH:mm"
-//            let dateString = dateFormat.string(from: date)
-            
-            
-            let iso8601Formatter = ISO8601DateFormatter()
-            let dateString = iso8601Formatter.string(from: Date())
-            
-            let record = AirtableRecords(records: [Records(fields: Fields(date: dateString, imageURL: imageUrl, notes: self.noteString))])
-//            print("record",record,"splited info",dateString,imageUrl,self.noteString)
-            Airtable.shared.uploadToAirtable(record: record) {
-                Airtable.shared.getRecords { records in
-//                    print("delegate send data",records)
-                    NotificationCenter.default.post(name: NSNotification.Name("DataReceived"), object: records)
-                }
-            }
-            
-//            self.uploadToAirtable(url: imageUrl)
-        }
-        
-        navigationController?.popToRootViewController(animated: true)
-        
-        
-    }
-    
-    
+
     func uploadImage(image: UIImage, completion: @escaping ((URL) -> Void)) {
         
         let apiURL = "https://api.imgur.com/3/image"
@@ -443,13 +341,35 @@ class PhotoEditorViewController: UIViewController {
             case .success(let result):
                 self.imageURL = result.data.link
                 completion(result.data.link)
-//                print("uploadImage link:",result.data.link)
             case .failure(let error):
                 print("uploadImage error:",error)
             }
         }
         
     }
+   
+    
+    @IBAction func uploadRecord(_ sender: Any) {
+        let image = graphicsImageRenderer()
+        uploadImage(image: image) { imageUrl in
+            
+            let iso8601Formatter = ISO8601DateFormatter()
+            let dateString = iso8601Formatter.string(from: Date())
+            
+            let record = AirtableRecords(records: [Records(fields: Fields(date: dateString, imageURL: imageUrl, notes: self.noteString))])
+            Airtable.shared.uploadToAirtable(record: record) {
+                Airtable.shared.getRecords { records in
+                    NotificationCenter.default.post(name: NSNotification.Name("DataReceived"), object: records)
+                }
+            }
+        }
+        
+        navigationController?.popToRootViewController(animated: true)
+        
+    }
+    
+    
+
 
     
     /*
@@ -473,64 +393,54 @@ extension PhotoEditorViewController: PHPickerViewControllerDelegate {
             let existedImage = self.resultImage.image
             itemProvider.loadObject(ofClass: UIImage.self) {[weak self] (image, error) in
                 DispatchQueue.main.async {
-                    if let self = self, let selectedImage = image as? UIImage,self.resultImage.image == existedImage {
+                    if let self = self, let selectedImage = image as? UIImage, self.resultImage.image == existedImage {
+                        
                         self.selectedImage = selectedImage
                         self.resultImage.image = selectedImage
                         self.resultImagebg.image = selectedImage
-                        self.blurEffect.isHidden = false
                         self.addImageButton.isHidden = true
+                        self.blurEffect.isHidden = false
                         self.mainStackView.isHidden = false
                         self.view.layoutIfNeeded()
-//                        print("*** imageView width & height: ",self.resultImage.frame.width,self.resultImage.frame.height)
+                        //將圖片大小調整與 imageView 一致，以便後續進行影像編輯。
                         self.resizeImage()
+                        
                     } else {
                         return
                     }
                 }
             }
         }
-        
     }
     
     func resizeImage() {
         
         var resizedImage = UIImage()
         
-//        print("000 imageView width & height: ",resultImage.frame.width,resultImage.frame.height)
-        
         if let image = resultImage.image {
-//            print("555")
             imageRatio = image.size.height/image.size.width
             
             if imageRatio >= 1 {
-//                print("666")
                 //portrait
-                
                 let size = CGSize(width: resultImage.frame.height/imageRatio, height: resultImage.frame.height)
                 let renderer = UIGraphicsImageRenderer(size: size)
                 resizedImage = renderer.image(actions: { (context) in
                     image.draw(in: renderer.format.bounds)
                 })
-
+//                resizedImage = image.af.imageScaled(to: size) //af.imageScaled 畫質壓縮太多啦
             } else {
-//                print("777")
+                //landscape
                 let size = CGSize(width: resultImage.frame.width, height: imageRatio*resultImage.frame.width)
                 let renderer = UIGraphicsImageRenderer(size: size)
                 resizedImage = renderer.image(actions: { (context) in
                     image.draw(in: renderer.format.bounds)
                 })
-
-//                print("888 image width & height",resultImage.frame.width,imageRatio*resultImage.frame.width)
+//                resizedImage = image.af.imageScaled(to: size)
             }
-
-
-            
-
         }
 
         resultImage.image = resizedImage
         
-//        print("111 image width & height: ",resultImage.image?.size.width,resultImage.image?.size.height)
     }
     
 }

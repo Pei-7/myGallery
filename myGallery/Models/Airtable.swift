@@ -150,7 +150,7 @@ class Airtable {
     
     
     
-    func sentEditedRecord(record: AirtableRecords, completion: @escaping () -> Void) {
+    func sentEditedRecord(record: AirtableRecords) {
         
         if let tableName = UserDefaults.standard.value(forKey: "TableName") {
             var urlRequest = setupURLRequest(tableName, httpMethod: "PATCH")
@@ -172,7 +172,7 @@ class Airtable {
     }
     
     
-    func removeRecord(id: String, completion: @escaping () -> Void) {
+    func removeRecord(id: String) {
         if let tableName = UserDefaults.standard.value(forKey: "TableName") {
             let urlSuffix = "\(tableName)/\(id)"
             var urlRequest = setupURLRequest(urlSuffix, httpMethod: "Delete")

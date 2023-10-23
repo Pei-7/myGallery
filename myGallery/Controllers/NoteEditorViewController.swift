@@ -30,6 +30,7 @@ class NoteEditorViewController: UIViewController {
     
     @IBOutlet var textViews: [UITextView]!
     
+    var bottomLine = ""
     var contentHeight: Int = 0 {
         didSet {
             addBottomLine()
@@ -95,13 +96,13 @@ class NoteEditorViewController: UIViewController {
         
         backgroundTextView.backgroundColor = .white
         backgroundTextView.alpha = 0.85
-//        inputTextView.backgroundColor = .white
-//        inputTextView.alpha = 0.8
         backgroundTextView.textColor = .systemGray5
         
         for _ in 1...25*25 {
-            backgroundTextView.text += "_"
+            bottomLine += "_"
         }
+        backgroundTextView.text = bottomLine
+        
         backgroundTextView.font = UIFont.systemFont(ofSize: 20)
         backgroundTextView.layer.cornerRadius = 12
         backgroundTextView.clipsToBounds = true
@@ -122,21 +123,20 @@ class NoteEditorViewController: UIViewController {
         inputTextView.typingAttributes = attributes
         
         contentHeight = Int(inputTextView.contentSize.height)
-//        print("initial:",contentHeight,backgroundTextView.text.count/25,backgroundTextView.text.count)
+        print("contentHeight",contentHeight)
+
     }
     
     func addBottomLine() {
         
         if contentHeight > Int(inputTextView.bounds.height) {
-            var bottomLine = ""
-            for _ in 1...(contentHeight/25*25+25) {
+            
+            for _ in 1...25 {
                 bottomLine += "_"
             }
-            
             backgroundTextView.text = bottomLine
-            
-//            print(contentHeight,backgroundTextView.text.count/25,backgroundTextView.text.count)
         }
+        print("contentHeight",contentHeight)
   
     }
     
@@ -155,29 +155,18 @@ class NoteEditorViewController: UIViewController {
             let noteString = inputTextView.text
             if let recordID, let selectedRecordField {
                 let record = AirtableRecords(records: [Records(id: recordID, fields: Fields(date: selectedRecordField.date, imageURL: selectedRecordField.imageURL, notes: noteString))])
-                Airtable.shared.sentEditedRecord(record: record) {
-                    Airtable.shared.getRecords { records in
-                        print("edited delegate send data",records)
-//                        NotificationCenter.default.post(name: NSNotification.Name("DataReceived"), object: records)
-                    }
-                }
+                Airtable.shared.sentEditedRecord(record: record)
             }
-            self.navigationController?.popToRootViewController(animated: true)
         }
     }
     
     @IBAction func remove(_ sender: Any) {
         let alertController = UIAlertController(title: "Delete Alert", message: "This record will be deleted permanently.", preferredStyle: .alert)
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
-        let confirmAction = UIAlertAction(title: "Confirm", style: .default) {_ in 
+        let cancelAction = UIAlertAction(title: "CANCEL", style: .cancel)
+        let confirmAction = UIAlertAction(title: "DELETE", style: .default) {_ in
             print("confirm delete")
             if let id = self.recordID {
-                Airtable.shared.removeRecord(id: id) {
-                    Airtable.shared.getRecords { records in
-                        print("removed delegate send data",records)
-//                        NotificationCenter.default.post(name: NSNotification.Name("DataReceived"), object: records)
-                    }
-                }
+                Airtable.shared.removeRecord(id: id)
             }
             self.navigationController?.popToRootViewController(animated: true)
         }
@@ -186,6 +175,19 @@ class NoteEditorViewController: UIViewController {
         
         present(alertController,animated: true,completion: nil)
     }
+    
+    
+    @IBAction func share(_ sender: Any) {
+        let renderer = UIGraphicsImageRenderer(size: mainImageView.bounds.size)
+        let image = renderer.image { context in
+            mainImageView.drawHierarchy(in: mainImageView.bounds, afterScreenUpdates: true)
+        }
+        let string = detailNote ?? ""
+        let controller = UIActivityViewController(activityItems: [image,string], applicationActivities: nil)
+        present(controller, animated: true)
+        
+    }
+    
     
     /*
     // MARK: - Navigation
@@ -230,7 +232,6 @@ class NoteEditorViewController: UIViewController {
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         view.endEditing(true)
     }
-
 }
 
 extension NoteEditorViewController: UITextViewDelegate, UIScrollViewDelegate {
@@ -239,18 +240,13 @@ extension NoteEditorViewController: UITextViewDelegate, UIScrollViewDelegate {
         if scrollView == inputTextView {
             backgroundTextView.contentOffset = inputTextView.contentOffset
         }
-        
-        contentHeight = Int(inputTextView.contentSize.height)
     }
     
     func textViewDidChange(_ textView: UITextView) {
+        contentHeight = Int(inputTextView.contentSize.height)
         if let text = inputTextView.text {
             completion?(text)
-//            print("NoteEditorVC",text)
         }
-        
-        
-        
     }
     
     

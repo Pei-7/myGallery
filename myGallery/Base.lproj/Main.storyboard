@@ -94,9 +94,6 @@
                             <rect key="frame" x="0.0" y="-103" width="393" height="852"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
-                                <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="UrV-zv-snJ">
-                                    <rect key="frame" x="186.66666666666666" y="377.66666666666669" width="20" height="20"/>
-                                </activityIndicatorView>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Click the '+' button  to start fulfilling your gallery!" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PyQ-Qz-pYR">
                                     <rect key="frame" x="88.333333333333329" y="405.66666666666669" width="216.66666666666669" height="40.666666666666686"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -106,16 +103,9 @@
                             </subviews>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             <constraints>
-                                <constraint firstItem="UrV-zv-snJ" firstAttribute="bottom" secondItem="PyQ-Qz-pYR" secondAttribute="top" constant="-8" id="2Vk-Bp-iEw"/>
                                 <constraint firstItem="PyQ-Qz-pYR" firstAttribute="centerX" secondItem="Ufr-kT-hAz" secondAttribute="centerX" id="8Av-3h-wwe"/>
-                                <constraint firstItem="UrV-zv-snJ" firstAttribute="centerX" secondItem="Ufr-kT-hAz" secondAttribute="centerX" id="XzU-RD-v10"/>
                                 <constraint firstItem="PyQ-Qz-pYR" firstAttribute="centerY" secondItem="Ufr-kT-hAz" secondAttribute="centerY" id="brX-dw-GHd"/>
                             </constraints>
-                            <variation key="default">
-                                <mask key="subviews">
-                                    <exclude reference="UrV-zv-snJ"/>
-                                </mask>
-                            </variation>
                         </view>
                         <cells>
                             <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="PostsCollectionViewCell" id="3Ff-h9-eFs" customClass="PostsCollectionViewCell" customModule="myGallery" customModuleProvider="target">
@@ -193,7 +183,6 @@
                     </navigationItem>
                     <connections>
                         <outlet property="emptyReminder" destination="PyQ-Qz-pYR" id="OvC-Z4-I6p"/>
-                        <outlet property="loadingIndicator" destination="UrV-zv-snJ" id="Wwo-e8-V9Y"/>
                         <outlet property="loadingView" destination="Ufr-kT-hAz" id="R9A-14-NF1"/>
                     </connections>
                 </collectionViewController>
@@ -638,18 +627,11 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="Fgx-bJ-KdY">
-                        <rightBarButtonItems>
-                            <barButtonItem systemItem="done" id="FOJ-A4-Mx1">
-                                <connections>
-                                    <action selector="uploadRecord:" destination="lkH-99-BcU" id="kqk-sR-uV6"/>
-                                </connections>
-                            </barButtonItem>
-                            <barButtonItem systemItem="action" id="f77-gZ-YCe">
-                                <connections>
-                                    <action selector="output:" destination="lkH-99-BcU" id="yYd-Dg-kRC"/>
-                                </connections>
-                            </barButtonItem>
-                        </rightBarButtonItems>
+                        <barButtonItem key="rightBarButtonItem" systemItem="done" id="FOJ-A4-Mx1">
+                            <connections>
+                                <action selector="uploadRecord:" destination="lkH-99-BcU" id="kqk-sR-uV6"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="addImageButton" destination="Wv9-rU-Fqf" id="ONq-A6-fIi"/>
@@ -757,6 +739,11 @@
                                     <action selector="edit:" destination="jy0-ts-AUO" id="nqq-3v-5K8"/>
                                 </connections>
                             </barButtonItem>
+                            <barButtonItem image="square.and.arrow.up" catalog="system" id="EXb-q1-TnF">
+                                <connections>
+                                    <action selector="share:" destination="jy0-ts-AUO" id="lZK-FL-WFQ"/>
+                                </connections>
+                            </barButtonItem>
                             <barButtonItem image="trash" catalog="system" id="trx-mC-xV2">
                                 <connections>
                                     <action selector="remove:" destination="jy0-ts-AUO" id="1Y9-mD-10i"/>
@@ -773,6 +760,7 @@
                         <outletCollection property="textViews" destination="ZQr-XA-ug5" collectionClass="NSMutableArray" id="E8K-5F-umv"/>
                         <outletCollection property="toolButtons" destination="d8b-aA-olF" collectionClass="NSMutableArray" id="hsj-k0-EA1"/>
                         <outletCollection property="toolButtons" destination="trx-mC-xV2" collectionClass="NSMutableArray" id="aC4-Cf-S9G"/>
+                        <outletCollection property="toolButtons" destination="EXb-q1-TnF" collectionClass="NSMutableArray" id="6nz-eA-7Ya"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wve-mr-eKe" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -821,6 +809,7 @@
         <image name="shadow0" width="1170" height="1170"/>
         <image name="shadow1" width="1170" height="1170"/>
         <image name="shadow2" width="1170" height="1170"/>
+        <image name="square.and.arrow.up" catalog="system" width="115" height="128"/>
         <image name="square.and.pencil" catalog="system" width="128" height="113"/>
         <image name="tag.fill" catalog="system" width="128" height="118"/>
         <image name="trash" catalog="system" width="117" height="128"/>

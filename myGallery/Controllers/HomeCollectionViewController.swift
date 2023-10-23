@@ -14,30 +14,30 @@ class HomeCollectionViewController: UICollectionViewController {
 
     var tableName: String?
     var airTableRecords = AirtableRecords(records: [])
-    var downloadedImages: [Bool] = []
     
     var columnCount: Double = 3
-    var itemSpace: Double = 2
+    var itemSpace: Double {
+        switch columnCount {
+        case 1:
+            return 4
+        case 6:
+            return 1
+        case 7:
+            return 0
+        default:
+            return 2
+        }
+    }
+    
 
     var receivedNotification: Bool = false
     var fetchCount = 0
     
-    @IBOutlet var loadingIndicator: UIActivityIndicatorView!
     @IBOutlet var emptyReminder: UILabel!
     @IBOutlet var loadingView: UIView!
     
     let progressBar = UIProgressView(progressViewStyle: .default)
-    var progressValue = 0
-    
-//    func loadingToggle(on: Bool) {
-//        if on == true {
-//            loadingIndicator.isHidden = false
-//            loadingIndicator.startAnimating()
-//        } else {
-//            loadingIndicator.isHidden = true
-//            loadingIndicator.stopAnimating()
-//        }
-//    }
+
     
     func createProgressBar() {
         // 設定進度條的顏色
@@ -55,15 +55,27 @@ class HomeCollectionViewController: UICollectionViewController {
         navigationController?.navigationBar.addSubview(progressBar)
     }
 
+    func updateProgressBar(progress: Float) {
+        print("progress bar = \(progress)")
+        progressBar.setProgress(progress, animated: true)
+        if progress == 1 {
+            Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { _ in
+                self.progressBar.isHidden = true
+            }
+        }
+    }
 
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         checkFirstLaunch()
-        setupCellSize()
-//        updateRecords()
-//        loadingToggle(on: true)
+        
+        if let savedColumnCount = UserDefaults.standard.value(forKey: "columnCount") as? Double {
+            columnCount = savedColumnCount
+        }
+        setupCellSize(columnCount: columnCount)
+
         createProgressBar()
 
         // Uncomment the following line to preserve selection between presentations
@@ -83,9 +95,8 @@ class HomeCollectionViewController: UICollectionViewController {
         print("viewDidAppear")
         emptyReminder.isHidden = true
         DispatchQueue.main.async {
-            print("progress bar = 0.1")
             self.progressBar.isHidden = false
-            self.progressBar.setProgress(0.1, animated: true)
+            self.updateProgressBar(progress: 0.1)
         }
 
         receivedNotification = false
@@ -93,33 +104,28 @@ class HomeCollectionViewController: UICollectionViewController {
             print("000 NotificationCenter observer")
             self.receivedNotification = true
             DispatchQueue.main.async {
-                print("progress bar = 0.3")
-                self.progressBar.setProgress(0.3, animated: true)
+                self.updateProgressBar(progress: 0.3)
             }
             if let records = notification.object as? AirtableRecords {
                 self.airTableRecords = records
                 DispatchQueue.main.async {
-                    print("progress bar = 0.7")
-                    self.progressBar.setProgress(0.7, animated: true)
+                    self.updateProgressBar(progress: 0.7)
                     self.fetchCount = 0
                     print("reset fetchCount",self.fetchCount)
                     self.updateRecords() //updatest update
-//                    self.updateRecords()
                 }
             }
         }
         
-        Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { _ in
+        Timer.scheduledTimer(withTimeInterval: 2.4, repeats: false) { _ in
             DispatchQueue.main.async {
-                print("progress bar = 0.4")
-                self.progressBar.setProgress(0.4, animated: true)
+                self.updateProgressBar(progress: 0.4)
                 print("receivedNotification",self.receivedNotification)
                 if self.receivedNotification == false {
                     self.updateRecords()
                 } else {
-                    print("progress bar = 1")
-                    self.progressBar.setProgress(1, animated: true)
-                    self.progressBar.isHidden = true
+                    self.updateProgressBar(progress: 1)
+
                 }
             }
         }
@@ -142,12 +148,10 @@ class HomeCollectionViewController: UICollectionViewController {
             if let records {
                 self.airTableRecords = records
                 DispatchQueue.main.async {
-                    print("progress bar = 0.75")
-                    self.progressBar.setProgress(0.75, animated: true)
+                    self.updateProgressBar(progress: 0.75)
                     self.collectionView.reloadData()
 //                    print(self.airTableRecords)
                 }
-                
             }
         }
     }
@@ -175,12 +179,15 @@ class HomeCollectionViewController: UICollectionViewController {
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of items
-//        print("airTableRecords.records.count",airTableRecords.records?.count)
         if let records = airTableRecords.records {
             
             if !(records.count > 0) {
-                print("emptyReminder should show or hide!")
+                print("emptyReminder should show!")
                 self.emptyReminder.isHidden = false
+                Timer.scheduledTimer(withTimeInterval: 4.5, repeats: false) {[weak self] _ in
+                    self?.updateProgressBar(progress: 1)
+                }
+                
             } else {
                 self.emptyReminder.isHidden = true
             }
@@ -189,45 +196,11 @@ class HomeCollectionViewController: UICollectionViewController {
             return 0
         }
     }
-//
-//    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-//
-//        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PostsCollectionViewCell", for: indexPath) as! PostsCollectionViewCell
-//        collectionView.bringSubviewToFront(loadingView)
-//
-//        // Configure the cell
-//        if let records = airTableRecords.records {
-//
-//            if let url = records[indexPath.item].fields.imageURL {
-////                print("url = records[indexPath.item].fields.imageURL")
-//                Airtable.shared.fetchImage(url: url) {
-//                    image in
-////                    print("airtable.shared.fectchImage")
-//                    DispatchQueue.main.async {
-//                        cell.postImage.image = image
-//                        self.fetchCount += 1
-//
-//                        if self.fetchCount == records.count {
-//                            print("progress bar = 1")
-//                            self.progressBar.setProgress(1, animated: true)
-//                            Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { _ in
-//                                self.progressBar.isHidden = true
-//                            }
-//
-//
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//
-//        return cell
-//    }
-//
+
+    
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PostsCollectionViewCell", for: indexPath) as! PostsCollectionViewCell
-        collectionView.bringSubviewToFront(loadingView)
         
         // Configure the cell
         if let records = airTableRecords.records {
@@ -241,11 +214,7 @@ class HomeCollectionViewController: UICollectionViewController {
                             self.fetchCount += 1
                             
                             if self.fetchCount == records.count {
-                                print("progress bar = 1")
-                                self.progressBar.setProgress(1, animated: true)
-                                Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { _ in
-                                    self.progressBar.isHidden = true
-                                }
+                                self.updateProgressBar(progress: 1)
                             }
                         }
                     }
@@ -261,7 +230,7 @@ class HomeCollectionViewController: UICollectionViewController {
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         if let controller = storyboard?.instantiateViewController(identifier: "\(NoteEditorViewController.self)") as? NoteEditorViewController {
-//            print("check airTableRecords.records.count wheh selected",airTableRecords.records?.count,[indexPath.item],"-----imageURL:",airTableRecords.records?[indexPath.item].fields.imageURL,"-----note:",airTableRecords.records?[indexPath.item].fields.notes)
+
             if let records = airTableRecords.records {
                 controller.recordID = records[indexPath.item].id
                 controller.selectedRecordField = records[indexPath.item].fields
@@ -276,12 +245,9 @@ class HomeCollectionViewController: UICollectionViewController {
 
     
     func checkFirstLaunch() {
-        print(UserDefaults.standard.value(forKey: "FirstLaunch") ?? "no data yet")
         guard let firstLaunch: Bool = UserDefaults.standard.value(forKey: "FirstLaunch") as? Bool else {
             print("is first launch")
             tableName = Airtable.shared.createNewTable()
-//            tableName = createNewTable()
-//            stopLoading()
             
             UserDefaults.standard.setValue(false, forKey: "FirstLaunch")
             UserDefaults.standard.setValue(tableName, forKey: "TableName")
@@ -292,7 +258,7 @@ class HomeCollectionViewController: UICollectionViewController {
 
     }
     
-    func setupCellSize() {
+    func setupCellSize(columnCount: Double) {
 
         let flowLayout = collectionViewLayout as? UICollectionViewFlowLayout
         let width = floor((collectionView.bounds.width - itemSpace * (columnCount-1)) / columnCount)
@@ -304,9 +270,7 @@ class HomeCollectionViewController: UICollectionViewController {
    
 
     @IBAction func zoom(_ sender: UIBarButtonItem) {
-//        print("zoom tapped")
 
-        
         switch sender.tag {
         case 0:
             if columnCount < 7 {
@@ -319,21 +283,9 @@ class HomeCollectionViewController: UICollectionViewController {
         default:
             return
         }
-        
-
-        switch columnCount {
-        case 1:
-            itemSpace = 4
-        case 6:
-            itemSpace = 1
-        case 7:
-            itemSpace = 0
-        default:
-            itemSpace = 2
-        }
-        
-        setupCellSize()
-//        collectionView.reloadData()
+            
+        setupCellSize(columnCount: columnCount)
+        UserDefaults.standard.setValue(columnCount, forKey: "columnCount")
 
         
     }
